@@ -2,18 +2,12 @@ package com.mail.product.controller;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import com.mail.product.vo.CategoryEntityVO;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.CategoryService;
-import com.mail.common.utils.PageUtils;
 import com.mail.common.utils.R;
 
 import javax.annotation.Resource;
@@ -37,7 +31,7 @@ public class CategoryController {
     /**
      * 以树形结构返回全部商品分类列表
      */
-    @RequestMapping("/list/tree")
+    @GetMapping("list/tree")
     //@RequiresPermissions("product:category:list")
     public R listAllWithTree() {
         List<CategoryEntityVO> list = categoryService.listAllWithTree();
@@ -59,13 +53,12 @@ public class CategoryController {
     /**
      * 保存
      */
-    @RequestMapping("/save")
+    @RequestMapping("add")
     //@RequiresPermissions("product:category:save")
     public R save(@RequestBody CategoryEntity category) {
-        categoryService.save(category);
-
-        return R.ok();
+        return categoryService.saveCategory(category);
     }
+
 
     /**
      * 修改
@@ -73,20 +66,18 @@ public class CategoryController {
     @RequestMapping("/update")
     //@RequiresPermissions("product:category:update")
     public R update(@RequestBody CategoryEntity category) {
-        categoryService.updateById(category);
-
-        return R.ok();
+        return categoryService.updateCategoryById(category);
     }
+
 
     /**
-     * 删除
+     * 删除商品分类
      */
-    @RequestMapping("/delete")
+    @PostMapping("delete")
     //@RequiresPermissions("product:category:delete")
     public R delete(@RequestBody Long[] catIds) {
-        categoryService.removeByIds(Arrays.asList(catIds));
-
-        return R.ok();
+        return categoryService.removeCategories(Arrays.asList(catIds));
     }
+
 
 }

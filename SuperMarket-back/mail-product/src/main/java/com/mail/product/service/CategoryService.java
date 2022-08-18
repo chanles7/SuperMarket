@@ -2,6 +2,7 @@ package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mail.common.utils.PageUtils;
+import com.mail.common.utils.R;
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.vo.CategoryEntityVO;
 
@@ -21,5 +22,13 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     List<CategoryEntityVO> listAllWithTree();
 
+    R removeCategories(List<Long> catIds);
+
+
+    R saveCategory(CategoryEntity category);
+
+    R updateCategoryById(CategoryEntity category);
 }
+
+
 

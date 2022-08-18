@@ -1,5 +1,7 @@
 package com.mail.product.service.impl;
 
+import cn.hutool.core.util.PageUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,6 +15,7 @@ import com.mail.product.entity.BrandEntity;
 import com.mail.product.service.BrandService;
 
 
+@Slf4j
 @Service("brandService")
 public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> implements BrandService {
 
@@ -22,7 +25,6 @@ public class BrandServiceImpl extends ServiceImpl<BrandDao, BrandEntity> impleme
                 new Query<BrandEntity>().getPage(params),
                 new QueryWrapper<BrandEntity>()
         );
-
         return new PageUtils(page);
     }
 

@@ -1,6 +1,7 @@
 package com.mail.product.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.mail.common.utils.R;
 import com.mail.product.vo.CategoryEntityVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,6 +48,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     }
 
 
+    /**
+     * 将商品三级分类链表转化为树形结构
+     *
+     * @param entities 链表
+     * @param catId    父目录ID
+     * @return 树形结构
+     */
     private List<CategoryEntityVO> castListToTree(List<CategoryEntity> entities, Long catId) {
         return entities.stream()
                 .filter(item -> catId.equals(item.getParentCid()))
@@ -59,4 +67,30 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+    public R removeCategories(List<Long> catIds) {
+        log.info("要删除的商品分类id为:{}", catIds);
+
+        removeByIds(catIds);
+
+        return R.ok();
+    }
+
+
+    @Override
+    public R saveCategory(CategoryEntity category) {
+        log.info("要添加的商品分类信息为:{}", category);
+        category.setShowStatus(1);
+        category.setSort(0);
+
+        return R.ok();
+    }
+
+    @Override
+    public R updateCategoryById(CategoryEntity category) {
+        log.info("要修改的商品分类信息为:{}", category);
+
+        return R.ok();
+    }
 }
