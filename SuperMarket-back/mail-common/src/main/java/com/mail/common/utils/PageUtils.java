@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 分页工具类
@@ -54,6 +55,14 @@ public class PageUtils implements Serializable {
 		this.pageSize = pageSize;
 		this.currPage = currPage;
 		this.totalPage = (int)Math.ceil((double)totalCount/pageSize);
+	}
+
+	public PageUtils(Map<String, Object> params) {
+		this.list = null;
+		this.totalCount = 0;
+		this.pageSize = Integer.parseInt(params.get("limit").toString());
+		this.currPage = 1;
+		this.totalPage = 1;
 	}
 
 	/**

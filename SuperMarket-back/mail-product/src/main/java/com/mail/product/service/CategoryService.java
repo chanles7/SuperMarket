@@ -28,6 +28,14 @@ public interface CategoryService extends IService<CategoryEntity> {
     R saveCategory(CategoryEntity category);
 
     R updateCategoryById(CategoryEntity category);
+
+
+    /**
+     * 通过父分类id所有子分类
+     * @param parentId 父分类id
+     * @return 子分类
+     */
+    List<CategoryEntity> getListByParentId(Long parentId);
 }
 
 

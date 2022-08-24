@@ -93,4 +93,10 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
         return R.ok();
     }
+
+
+    @Override
+    public List<CategoryEntity> getListByParentId(Long parentId) {
+        return query().eq("parent_cid", parentId).list();
+    }
 }

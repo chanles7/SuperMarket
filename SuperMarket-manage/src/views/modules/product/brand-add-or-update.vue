@@ -5,10 +5,7 @@
         <el-input v-model="dataForm.name" placeholder="品牌名"></el-input>
       </el-form-item>
       <el-form-item label="品牌logo" prop="logo">
-        <el-upload class="upload-demo" action="https://jsonplaceholder.typicode.com/posts/" :on-preview="handlePreview" :on-remove="handleRemove" :before-remove="beforeRemove" multiple :limit="3" :on-exceed="handleExceed" :file-list="fileList">
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-        </el-upload>
+        <single-upload v-model="dataForm.logo" />
       </el-form-item>
       <el-form-item label="介绍" prop="descript">
         <el-input v-model="dataForm.descript" placeholder="介绍"></el-input>
@@ -20,7 +17,7 @@
         <el-input v-model="dataForm.firstLetter" placeholder="检索首字母"></el-input>
       </el-form-item>
       <el-form-item label="排序" prop="sort">
-        <el-input v-model="dataForm.sort" placeholder="排序"></el-input>
+        <el-input v-model.number="dataForm.sort" placeholder="排序"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -31,7 +28,11 @@
 </template>
 
 <script>
+import SingleUpload from "@/components/upload/singleUpload.vue";
 export default {
+  components: {
+    SingleUpload,
+  },
   data() {
     return {
       visible: false,
@@ -52,17 +53,34 @@ export default {
         descript: [
           { required: true, message: "介绍不能为空", trigger: "blur" },
         ],
-        showStatus: [
+        firstLetter: [
           {
-            required: true,
-            message: "显示状态[0-不显示；1-显示]不能为空",
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("检索首字母不能为空"));
+              } else if (!/^[a-zA-Z]$/.test(value)) {
+                callback(new Error("检索首字母必须为a-z或A-Z"));
+              } else {
+                callback();
+              }
+            },
             trigger: "blur",
           },
         ],
-        firstLetter: [
-          { required: true, message: "检索首字母不能为空", trigger: "blur" },
+        sort: [
+          {
+            validator: (rule, value, callback) => {
+              if (value === "") {
+                callback(new Error("排序不能为空"));
+              } else if (!Number.isInteger(value)) {
+                callback(new Error("排序必须为数字"));
+              } else {
+                callback();
+              }
+            },
+            trigger: "blur",
+          },
         ],
-        sort: [{ required: true, message: "排序不能为空", trigger: "blur" }],
       },
     };
   },
