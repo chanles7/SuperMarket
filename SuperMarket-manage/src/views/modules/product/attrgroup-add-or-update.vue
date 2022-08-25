@@ -14,7 +14,7 @@
         <el-input v-model="dataForm.icon" placeholder="组图标"></el-input>
       </el-form-item>
       <el-form-item label="所属分类" prop="catelogId">
-        <el-cascader v-model="dataForm.catelogIds" :options="categories" :props="props" @change="handleChange"></el-cascader>
+        <el-cascader v-model="dataForm.catelogIds" :options="categories" :props="props" @change="handleChange" filterable placeholder="试试搜索：手机"></el-cascader>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -49,7 +49,7 @@ export default {
         ],
         icon: [{ required: true, message: "组图标不能为空", trigger: "blur" }],
         catelogId: [
-          { required: true, message: "所属分类id不能为空", trigger: "blur" },
+          { required: true, message: "所属分类不能为空", trigger: "blur" },
         ],
       },
 
@@ -80,6 +80,7 @@ export default {
       this.visible = true;
       this.$nextTick(() => {
         this.$refs["dataForm"].resetFields();
+        this.dataForm.catelogIds = [];
         if (this.dataForm.attrGroupId) {
           this.$http({
             url: this.$http.adornUrl(
@@ -88,12 +89,23 @@ export default {
             method: "get",
             params: this.$http.adornParams(),
           }).then(({ data }) => {
-            if (data && data.code === 0) {
+            if (data && data.code === 200) {
               this.dataForm.attrGroupName = data.attrGroup.attrGroupName;
               this.dataForm.sort = data.attrGroup.sort;
               this.dataForm.descript = data.attrGroup.descript;
               this.dataForm.icon = data.attrGroup.icon;
               this.dataForm.catelogId = data.attrGroup.catelogId;
+            }
+          });
+          this.$http({
+            url: this.$http.adornUrl(
+              `/product/attrgroup/chain/${this.dataForm.attrGroupId}`
+            ),
+            method: "get",
+            params: this.$http.adornParams(),
+          }).then(({ data }) => {
+            if (data && data.code === 200) {
+              this.dataForm.catelogIds = data.data;
             }
           });
         }
@@ -116,11 +128,10 @@ export default {
               sort: this.dataForm.sort,
               descript: this.dataForm.descript,
               icon: this.dataForm.icon,
-              catelogId:
-                this.dataForm.catelogIds[this.dataForm.catelogIds.length - 1],
+              catelogId: this.dataForm.catelogId,
             }),
           }).then(({ data }) => {
-            if (data && data.code === 0) {
+            if (data && data.code === 200) {
               this.$message({
                 message: "操作成功",
                 type: "success",
@@ -137,7 +148,9 @@ export default {
         }
       });
     },
-    handleChange() {},
+    handleChange(data) {
+      this.dataForm.catelogId = data[data.length - 1];
+    },
   },
   created() {
     this.getCategoryTree();

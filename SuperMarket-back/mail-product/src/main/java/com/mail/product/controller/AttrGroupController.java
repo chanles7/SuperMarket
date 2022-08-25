@@ -1,19 +1,18 @@
 package com.mail.product.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.mail.product.entity.AttrGroupEntity;
 import com.mail.product.service.AttrGroupService;
 import com.mail.common.utils.PageUtils;
 import com.mail.common.utils.R;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -26,13 +25,14 @@ import com.mail.common.utils.R;
 @RestController
 @RequestMapping("product/attrgroup")
 public class AttrGroupController {
-    @Autowired
+
+    @Resource
     private AttrGroupService attrGroupService;
 
     /**
      * 列表
      */
-    @RequestMapping("/list/{categoryId}")
+    @RequestMapping("list/{categoryId}")
     //@RequiresPermissions("product:attrgroup:list")
     public R list(@RequestParam Map<String, Object> params,
                   @PathVariable Long categoryId) {
@@ -44,12 +44,23 @@ public class AttrGroupController {
     /**
      * 信息
      */
-    @RequestMapping("/info/{attrGroupId}")
+    @GetMapping ("info/{attrGroupId}")
     //@RequiresPermissions("product:attrgroup:info")
     public R info(@PathVariable("attrGroupId") Long attrGroupId) {
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
 
         return R.ok().put("attrGroup", attrGroup);
+    }
+
+
+    /**
+     * 信息
+     */
+    @GetMapping ("chain/{attrGroupId}")
+    //@RequiresPermissions("product:attrgroup:info")
+    public R chain(@PathVariable("attrGroupId") Long attrGroupId) {
+        List<Long> categoryIds = attrGroupService.getChainById(attrGroupId);
+        return R.ok(categoryIds);
     }
 
     /**

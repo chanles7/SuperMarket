@@ -6,10 +6,8 @@ import com.mail.product.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -41,7 +39,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         if (categoryId != 0) {
             Set<Long> attrGroupIds = new HashSet<>();
             getAttrGroupIdsByCategoryId(categoryId, attrGroupIds);
-            if(attrGroupIds.isEmpty()){
+            if (attrGroupIds.isEmpty()) {
                 return new PageUtils(params);
             }
             wrapper.in("attr_group_id", attrGroupIds);
@@ -70,7 +68,7 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
             return;
         }
         List<AttrGroupEntity> attrGroupEntityList = query().eq("catelog_id", categoryId).list();
-        if(attrGroupEntityList.size()>0){
+        if (attrGroupEntityList.size() > 0) {
             attrGroupIds.addAll(attrGroupEntityList
                     .stream()
                     .map(AttrGroupEntity::getAttrGroupId)
@@ -78,4 +76,21 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
         }
     }
 
+
+    @Override
+    public List<Long> getChainById(Long attrGroupId) {
+        LinkedList<Long> categoryIds = new LinkedList<>();
+        AttrGroupEntity attrGroupEntity = baseMapper.selectById(attrGroupId);
+        CategoryEntity category = null;
+        for (; ; ) {
+            if (category == null) {
+                category = categoryService.getById(attrGroupEntity.getCatelogId());
+            } else {
+                if (category.getCatLevel() == 1) break;
+                category = categoryService.getById(category.getParentCid());
+            }
+            categoryIds.addFirst(category.getCatId());
+        }
+        return categoryIds;
+    }
 }

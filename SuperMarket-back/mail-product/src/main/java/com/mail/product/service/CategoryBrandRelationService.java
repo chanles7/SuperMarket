@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mail.common.utils.PageUtils;
 import com.mail.product.entity.CategoryBrandRelationEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +17,9 @@ import java.util.Map;
 public interface CategoryBrandRelationService extends IService<CategoryBrandRelationEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    List<CategoryBrandRelationEntity> categoryList(Long brandId);
+
+    void saveDetail(CategoryBrandRelationEntity categoryBrandRelation);
 }
 
