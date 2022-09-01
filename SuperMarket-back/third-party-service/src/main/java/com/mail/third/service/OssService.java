@@ -1,6 +1,6 @@
 package com.mail.third.service;
 
-import com.mail.common.utils.R;
+import com.mail.common.util.R;
 
 public interface OssService {
 

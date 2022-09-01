@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.mail.product.entity.AttrEntity;
+import com.mail.product.vo.response.AttrGroupRespVO;
 import org.springframework.web.bind.annotation.*;
 
 import com.mail.product.entity.AttrGroupEntity;
 import com.mail.product.service.AttrGroupService;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.R;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 
 import javax.annotation.Resource;
 
@@ -44,7 +45,7 @@ public class AttrGroupController {
     /**
      * 信息
      */
-    @GetMapping ("info/{attrGroupId}")
+    @GetMapping("info/{attrGroupId}")
     //@RequiresPermissions("product:attrgroup:info")
     public R info(@PathVariable("attrGroupId") Long attrGroupId) {
         AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);
@@ -56,11 +57,11 @@ public class AttrGroupController {
     /**
      * 信息
      */
-    @GetMapping ("chain/{attrGroupId}")
+    @GetMapping("chain/{attrGroupId}")
     //@RequiresPermissions("product:attrgroup:info")
     public R chain(@PathVariable("attrGroupId") Long attrGroupId) {
-        List<Long> categoryIds = attrGroupService.getChainById(attrGroupId);
-        return R.ok(categoryIds);
+        Long[] path = attrGroupService.getChainById(attrGroupId);
+        return R.ok(path);
     }
 
     /**
@@ -92,8 +93,38 @@ public class AttrGroupController {
     //@RequiresPermissions("product:attrgroup:delete")
     public R delete(@RequestBody Long[] attrGroupIds) {
         attrGroupService.removeByIds(Arrays.asList(attrGroupIds));
-
         return R.ok();
+    }
+
+
+    /**
+     * 根据分组id查询关联的属性
+     */
+    @GetMapping("{attrGroupId}/attr/relation")
+    public R attrRelation(@PathVariable Long attrGroupId) {
+        List<AttrEntity> attrEntityList = attrGroupService.getAttrListByRelation(attrGroupId);
+        return R.ok(attrEntityList);
+    }
+
+
+    /**
+     * 根据分组id查询本分类下还能关联的属性
+     */
+    @GetMapping("{attrGroupId}/attr/norelation")
+    public R attrNoRelation(@RequestParam Map<String, Object> params,
+                            @PathVariable Long attrGroupId) {
+        PageUtils page = attrGroupService.getAttrListNoRelation(params, attrGroupId);
+        return R.ok().put("page", page);
+    }
+
+
+    /**
+     * 获取某商品分类下的全部属性分组、规格参数
+     */
+    @GetMapping("{categoryId}/tree/attr")
+    public R getAttrTree(@PathVariable Long categoryId) {
+        List<AttrGroupRespVO> attrTree = attrGroupService.getAttrTreeByCategoryId(categoryId);
+        return R.ok(attrTree);
     }
 
 }

@@ -5,8 +5,8 @@ import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.Query;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
 
 import com.mail.user.dao.MemberDao;
 import com.mail.user.entity.MemberEntity;

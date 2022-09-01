@@ -1,9 +1,11 @@
 package com.mail.product.service.impl;
 
+import com.mail.product.dao.BrandDao;
 import com.mail.product.entity.BrandEntity;
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.BrandService;
 import com.mail.product.service.CategoryService;
+import com.mail.product.vo.response.BrandRespVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,8 +14,8 @@ import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.Query;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
 
 import com.mail.product.dao.CategoryBrandRelationDao;
 import com.mail.product.entity.CategoryBrandRelationEntity;
@@ -30,6 +32,8 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
     private BrandService brandService;
     @Resource
     private CategoryService categoryService;
+    @Resource
+    private BrandDao brandDao;
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
@@ -55,5 +59,11 @@ public class CategoryBrandRelationServiceImpl extends ServiceImpl<CategoryBrandR
         CategoryEntity categoryEntity = categoryService.getById(categoryBrandRelation.getCatelogId());
         categoryBrandRelation.setCatelogName(categoryEntity.getName());
         this.save(categoryBrandRelation);
+    }
+
+
+    @Override
+    public List<CategoryBrandRelationEntity> brandList(Long categoryId) {
+        return query().eq("catelog_id", categoryId).list();
     }
 }

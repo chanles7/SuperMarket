@@ -1,7 +1,7 @@
 package com.mail.depository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.utils.PageUtils;
+import com.mail.common.util.PageUtils;
 import com.mail.depository.entity.PurchaseDetailEntity;
 
 import java.util.Map;

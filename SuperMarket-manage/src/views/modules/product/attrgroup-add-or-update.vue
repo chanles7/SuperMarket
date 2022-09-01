@@ -58,7 +58,7 @@ export default {
       props: {
         value: "catId",
         label: "name",
-        children: "categoryEntityVOs",
+        children: "children",
       },
     };
   },

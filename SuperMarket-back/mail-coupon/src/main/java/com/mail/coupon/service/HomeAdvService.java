@@ -1,7 +1,7 @@
 package com.mail.coupon.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.utils.PageUtils;
+import com.mail.common.util.PageUtils;
 import com.mail.coupon.entity.HomeAdvEntity;
 
 import java.util.Map;

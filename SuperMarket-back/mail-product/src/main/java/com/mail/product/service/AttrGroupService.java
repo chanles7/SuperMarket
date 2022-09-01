@@ -1,8 +1,10 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.utils.PageUtils;
+import com.mail.common.util.PageUtils;
+import com.mail.product.entity.AttrEntity;
 import com.mail.product.entity.AttrGroupEntity;
+import com.mail.product.vo.response.AttrGroupRespVO;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +20,14 @@ public interface AttrGroupService extends IService<AttrGroupEntity> {
 
     PageUtils queryPage(Map<String, Object> params, Long categoryId);
 
-    List<Long> getChainById(Long attrGroupId);
+    Long[] getChainById(Long attrGroupId);
+
+    AttrGroupEntity getAttrGroupByAttrId(Long attrId);
+
+    List<AttrEntity> getAttrListByRelation(Long attrGroupId);
+
+    PageUtils getAttrListNoRelation(Map<String, Object> params, Long attrGroupId);
+
+    List<AttrGroupRespVO> getAttrTreeByCategoryId(Long categoryId);
 }
 

@@ -1,8 +1,5 @@
 <template>
-  <el-dialog
-    title="云存储配置"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
+  <el-dialog title="云存储配置" :close-on-click-modal="false" :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="120px">
       <el-form-item size="mini" label="存储类型">
         <el-radio-group v-model="dataForm.type">
@@ -83,51 +80,51 @@
 </template>
 
 <script>
-  export default {
-    data () {
-      return {
-        visible: false,
-        dataForm: {},
-        dataRule: {}
-      }
+export default {
+  data() {
+    return {
+      visible: false,
+      dataForm: {},
+      dataRule: {},
+    };
+  },
+  methods: {
+    init(id) {
+      this.visible = true;
+      this.$http({
+        url: this.$http.adornUrl("/sys/oss/config"),
+        method: "get",
+        params: this.$http.adornParams(),
+      }).then(({ data }) => {
+        this.dataForm = data && data.code === 200 ? data.config : [];
+      });
     },
-    methods: {
-      init (id) {
-        this.visible = true
-        this.$http({
-          url: this.$http.adornUrl('/sys/oss/config'),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          this.dataForm = data && data.code === 0 ? data.config : []
-        })
-      },
-      // 表单提交
-      dataFormSubmit () {
-        this.$refs['dataForm'].validate((valid) => {
-          if (valid) {
-            this.$http({
-              url: this.$http.adornUrl('/sys/oss/saveConfig'),
-              method: 'post',
-              data: this.$http.adornData(this.dataForm)
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.visible = false
-                  }
-                })
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
-          }
-        })
-      }
-    }
-  }
+    // 表单提交
+    dataFormSubmit() {
+      this.$refs["dataForm"].validate((valid) => {
+        if (valid) {
+          this.$http({
+            url: this.$http.adornUrl("/sys/oss/saveConfig"),
+            method: "post",
+            data: this.$http.adornData(this.dataForm),
+          }).then(({ data }) => {
+            if (data && data.code === 200) {
+              this.$message({
+                message: "操作成功",
+                type: "success",
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false;
+                },
+              });
+            } else {
+              this.$message.error(data.msg);
+            }
+          });
+        }
+      });
+    },
+  },
+};
 </script>
 

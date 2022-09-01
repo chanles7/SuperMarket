@@ -38,7 +38,7 @@ export default {
     return {
       categotyTree: [],
       defaultProps: {
-        children: "categoryEntityVOs",
+        children: "children",
         label: "name",
       },
 

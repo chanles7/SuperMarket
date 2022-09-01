@@ -1,16 +1,17 @@
 package com.mail.product.controller;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.hutool.core.bean.BeanUtil;
+import com.mail.product.vo.response.BrandRespVO;
 import org.springframework.web.bind.annotation.*;
 
 import com.mail.product.entity.CategoryBrandRelationEntity;
 import com.mail.product.service.CategoryBrandRelationService;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.R;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 
 import javax.annotation.Resource;
 
@@ -49,6 +50,22 @@ public class CategoryBrandRelationController {
     public R categoryList(Long brandId){
         List<CategoryBrandRelationEntity> categoryBrandRelations = categoryBrandRelationService.categoryList(brandId);
         return R.ok(categoryBrandRelations);
+    }
+
+
+    /**
+     * 获取当前商品分类关联的品牌列表
+     * @param categoryId 商品关联信息
+     * @return
+     */
+    @GetMapping("brand/list")
+    //@RequiresPermissions("product:categorybrandrelation:list")
+    public R brandList(Long categoryId){
+        List<CategoryBrandRelationEntity> categoryBrandRelations = categoryBrandRelationService.brandList(categoryId);
+        List<BrandRespVO> collect = categoryBrandRelations.stream()
+                .map(item -> BeanUtil.copyProperties(item, BrandRespVO.class))
+                .collect(Collectors.toList());
+        return R.ok(collect);
     }
 
 

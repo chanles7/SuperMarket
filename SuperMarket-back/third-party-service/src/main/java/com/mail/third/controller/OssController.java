@@ -1,7 +1,7 @@
 package com.mail.third.controller;
 
 
-import com.mail.common.utils.R;
+import com.mail.common.util.R;
 import com.mail.third.service.OssService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

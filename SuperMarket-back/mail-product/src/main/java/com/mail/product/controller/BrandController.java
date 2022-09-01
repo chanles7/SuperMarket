@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mail.product.entity.BrandEntity;
 import com.mail.product.service.BrandService;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.R;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 
 import javax.validation.Valid;
 

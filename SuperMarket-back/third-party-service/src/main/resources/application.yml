@@ -4,12 +4,3 @@ server:
 logging:
   level:
     com.mail: debug
-
-spring:
-  cloud:
-    alicloud:
-      oss:
-        endpoint: oss-cn-shanghai.aliyuncs.com
-        bucket: ch-oss-mail
-      access-key: LTAI5tKdMb3kV9qKUzs8ZWYz
-      secret-key: z0zjSnZo2pIFy2OfbgiEtYyDDZ34Mx

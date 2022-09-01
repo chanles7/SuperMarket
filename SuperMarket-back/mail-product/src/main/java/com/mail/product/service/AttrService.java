@@ -1,9 +1,12 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.utils.PageUtils;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 import com.mail.product.entity.AttrEntity;
+import com.mail.product.vo.request.AttrReqVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +19,19 @@ import java.util.Map;
 public interface AttrService extends IService<AttrEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void saveAttr(AttrReqVO attrReqVO);
+
+    PageUtils baseAttrList(Map<String, Object> params, String attrType, Long categoryId);
+
+    R getAttrInfo(Long attrId);
+
+    void updateAttr(AttrReqVO attrReqVO);
+
+    List<AttrEntity> getAttrListByRelation(Long attrGroupId);
+
 }
+
+
+
 

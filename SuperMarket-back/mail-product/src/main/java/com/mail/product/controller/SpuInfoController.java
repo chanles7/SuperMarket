@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mail.product.entity.SpuInfoEntity;
 import com.mail.product.service.SpuInfoService;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.R;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 
 
 

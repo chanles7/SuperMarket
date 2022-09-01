@@ -1,10 +1,10 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.R;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 import com.mail.product.entity.CategoryEntity;
-import com.mail.product.vo.CategoryEntityVO;
+import com.mail.product.vo.response.CategoryRespVO;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +20,7 @@ public interface CategoryService extends IService<CategoryEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
 
-    List<CategoryEntityVO> listAllWithTree();
+    List<CategoryRespVO> listAllWithTree();
 
     R removeCategories(List<Long> catIds);
 
@@ -36,6 +36,13 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @return 子分类
      */
     List<CategoryEntity> getListByParentId(Long parentId);
+
+    /**
+     * 通过商品分类获取当前分类的完整路径
+     * @param categoryId 商品分类id
+     * @return 完整路径
+     */
+    Long[] getCurrentCategoryPath(Long categoryId);
 }
 
 

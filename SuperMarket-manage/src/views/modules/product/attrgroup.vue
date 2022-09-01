@@ -14,6 +14,7 @@
             </el-form-item>
             <el-form-item>
               <el-button @click="getDataList()">查询</el-button>
+              <el-button type="success" @click="getAllDataList()">查询全部</el-button>
               <el-button v-if="isAuth('product:attrgroup:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
               <el-button v-if="isAuth('product:attrgroup:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
             </el-form-item>
@@ -35,6 +36,7 @@
             </el-table-column>
             <el-table-column fixed="right" header-align="center" align="center" width="150" label="操作">
               <template slot-scope="scope">
+                <el-button type="text" size="small" @click="relationHandle(scope.row.attrGroupId)">关联</el-button>
                 <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.attrGroupId)">修改</el-button>
                 <el-button type="text" size="small" @click="deleteHandle(scope.row.attrGroupId)">删除</el-button>
               </template>
@@ -43,7 +45,10 @@
           <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper">
           </el-pagination>
           <!-- 弹窗, 新增 / 修改 -->
-          <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+          <AddOrUpdate v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList" />
+
+          <!-- 修改关联关系 -->
+          <RelationUpdate v-if="relationVisible" ref="relationUpdate" @refreshData="getDataList" />
         </div>
       </el-col>
     </el-row>
@@ -53,13 +58,15 @@
 
 <script>
 import AddOrUpdate from "./attrgroup-add-or-update";
-import Category from "../../common/category.vue";
+import Category from "../common/category.vue";
+import RelationUpdate from "./attr-group-relation";
 export default {
   data() {
     return {
       dataForm: {
         key: "",
       },
+
       dataList: [],
       pageIndex: 1,
       pageSize: 10,
@@ -67,17 +74,28 @@ export default {
       catId: 0,
       dataListLoading: false,
       dataListSelections: [],
+
       addOrUpdateVisible: false,
+
+      relationVisible: false,
     };
   },
   components: {
     AddOrUpdate,
     Category,
+    RelationUpdate,
   },
   activated() {
     this.getDataList();
   },
   methods: {
+    //处理分组与属性的关联
+    relationHandle(groupId) {
+      this.relationVisible = true;
+      this.$nextTick(() => {
+        this.$refs.relationUpdate.init(groupId);
+      });
+    },
     // 获取数据列表
     getDataList() {
       this.dataListLoading = true;
@@ -143,7 +161,7 @@ export default {
           method: "post",
           data: this.$http.adornData(ids, false),
         }).then(({ data }) => {
-          if (data && data.code === 0) {
+          if (data && data.code === 200) {
             this.$message({
               message: "操作成功",
               type: "success",
@@ -160,6 +178,10 @@ export default {
     },
     treeNodeClick(data, node, component) {
       this.catId = data.catId;
+      this.getDataList();
+    },
+    getAllDataList() {
+      this.catId = 0;
       this.getDataList();
     },
   },

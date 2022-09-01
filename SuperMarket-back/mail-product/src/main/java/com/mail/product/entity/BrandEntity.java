@@ -29,7 +29,6 @@ public class BrandEntity implements Serializable {
 	/**
 	 * 品牌名
 	 */
-	@NotBlank
 	private String name;
 	/**
 	 * 品牌logo地址

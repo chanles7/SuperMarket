@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mail.product.dao.AttrDao">
-
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.mail.product.entity.AttrEntity" id="attrMap">
         <result property="attrId" column="attr_id"/>
         <result property="attrName" column="attr_name"/>
@@ -18,4 +17,10 @@
     </resultMap>
 
 
+    <select id="getAttrListByRelation" resultMap="attrMap">
+        select a.*
+        from pms_attr_group_relation r
+                 left join pms_attr a on r.attr_id = a.attr_id
+        where r.attr_group_id = #{attrGroupId,jdbcType=BIGINT}
+    </select>
 </mapper>

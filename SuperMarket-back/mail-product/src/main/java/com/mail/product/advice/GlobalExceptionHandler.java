@@ -1,7 +1,7 @@
 package com.mail.product.advice;
 
 
-import com.mail.common.utils.R;
+import com.mail.common.util.R;
 import com.mail.common.exception.ExceptionEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.ObjectError;

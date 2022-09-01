@@ -3,12 +3,12 @@ package com.mail.product.controller;
 import java.util.Arrays;
 import java.util.List;
 
-import com.mail.product.vo.CategoryEntityVO;
+import com.mail.product.vo.response.CategoryRespVO;
 import org.springframework.web.bind.annotation.*;
 
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.CategoryService;
-import com.mail.common.utils.R;
+import com.mail.common.util.R;
 
 import javax.annotation.Resource;
 
@@ -34,7 +34,7 @@ public class CategoryController {
     @GetMapping("list/tree")
     //@RequiresPermissions("product:category:list")
     public R listAllWithTree() {
-        List<CategoryEntityVO> list = categoryService.listAllWithTree();
+        List<CategoryRespVO> list = categoryService.listAllWithTree();
         return R.ok(list);
     }
 

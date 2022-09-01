@@ -1,20 +1,25 @@
 package com.mail.product.service.impl;
 
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mail.product.entity.AttrEntity;
+import com.mail.product.entity.AttrGroupRelationEntity;
 import com.mail.product.entity.CategoryEntity;
+import com.mail.product.service.AttrGroupRelationService;
+import com.mail.product.service.AttrService;
 import com.mail.product.service.CategoryService;
+import com.mail.product.vo.response.AttrGroupRespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.Query;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
 
 import com.mail.product.dao.AttrGroupDao;
 import com.mail.product.entity.AttrGroupEntity;
@@ -31,6 +36,12 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
     @Resource
     private CategoryService categoryService;
+    @Resource
+    private AttrGroupRelationService attrGroupRelationService;
+    @Resource
+    private AttrService attrService;
+    @Resource
+    private AttrGroupDao attrGroupDao;
 
 
     @Override
@@ -78,19 +89,40 @@ public class AttrGroupServiceImpl extends ServiceImpl<AttrGroupDao, AttrGroupEnt
 
 
     @Override
-    public List<Long> getChainById(Long attrGroupId) {
-        LinkedList<Long> categoryIds = new LinkedList<>();
-        AttrGroupEntity attrGroupEntity = baseMapper.selectById(attrGroupId);
-        CategoryEntity category = null;
-        for (; ; ) {
-            if (category == null) {
-                category = categoryService.getById(attrGroupEntity.getCatelogId());
-            } else {
-                if (category.getCatLevel() == 1) break;
-                category = categoryService.getById(category.getParentCid());
-            }
-            categoryIds.addFirst(category.getCatId());
+    public Long[] getChainById(Long attrGroupId) {
+        AttrGroupEntity attrGroup = this.baseMapper.selectById(attrGroupId);
+        if (attrGroup == null || attrGroup.getCatelogId() == null) {
+            return null;
         }
-        return categoryIds;
+        return categoryService.getCurrentCategoryPath(attrGroup.getCatelogId());
+    }
+
+
+    @Override
+    public AttrGroupEntity getAttrGroupByAttrId(Long attrId) {
+        AttrGroupRelationEntity attrGroupRelation = attrGroupRelationService.getAttrGroupIdByAttrId(attrId);
+        return attrGroupRelation == null ? null : this.baseMapper.selectById(attrGroupRelation.getAttrGroupId());
+    }
+
+
+    @Override
+    public List<AttrEntity> getAttrListByRelation(Long attrGroupId) {
+        return attrService.getAttrListByRelation(attrGroupId);
+    }
+
+
+    @Override
+    public PageUtils getAttrListNoRelation(Map<String, Object> params, Long attrGroupId) {
+        Page<AttrEntity> page = new Page<>(Long.parseLong(params.get("page").toString()), Long.parseLong(params.get("limit").toString()));
+        List<AttrEntity> attrEntities = attrGroupDao.getAttrListNoRelation(page, attrGroupId);
+        PageUtils pageUtils = new PageUtils(page);
+        pageUtils.setList(attrEntities);
+        return pageUtils;
+    }
+
+
+    @Override
+    public List<AttrGroupRespVO> getAttrTreeByCategoryId(Long categoryId) {
+        return attrGroupDao.getAttrTreeByCategoryId(categoryId);
     }
 }

@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mail.product.dao.AttrGroupDao">
-
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.mail.product.entity.AttrGroupEntity" id="attrGroupMap">
         <result property="attrGroupId" column="attr_group_id"/>
         <result property="attrGroupName" column="attr_group_name"/>
@@ -14,4 +13,55 @@
     </resultMap>
 
 
+    <select id="getAttrListNoRelation" resultType="com.mail.product.entity.AttrEntity">
+        select distinct at.*
+        from (select attr_group_id, catelog_id
+              from `pms_attr_group`
+              where catelog_id = (select catelog_id
+                                  from `pms_attr_group`
+                                  where attr_group_id = #{attrGroupId,jdbcType=BIGINT}
+                  limit 0
+                  , 1) ) a
+            left join pms_attr at
+        on at.catelog_id = a.catelog_id and at.attr_type != 0
+            left join pms_attr_group_relation r on r.attr_id = at.attr_id
+        where r.id is null
+        order by at.attr_id
+    </select>
+
+
+    <resultMap id="AttrGroupRespVOMap" type="com.mail.product.vo.response.AttrGroupRespVO">
+        <result column="attr_group_id" property="attrGroupId"/>
+        <result column="attr_group_name" property="attrGroupName"/>
+        <result column="sort" property="sort"/>
+        <result column="descript" property="descript"/>
+        <result column="catelog_id" property="catelogId"/>
+        <result column="icon" property="icon"/>
+        <collection property="attrs" ofType="com.mail.product.vo.response.AttrRespVO">
+            <result column="attr_id" property="attrId"/>
+            <result column="attr_name" property="attrName"/>
+            <result column="show_desc" property="showDesc"/>
+            <result column="value_select" property="valueSelect"/>
+            <result column="value_type" property="valueType"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="getAttrTreeByCategoryId" resultMap="AttrGroupRespVOMap">
+        select g.attr_group_id,
+               g.attr_group_name,
+               g.descript,
+               g.sort,
+               g.icon,
+               g.catelog_id,
+               a.attr_id,
+               a.attr_name,
+               a.show_desc,
+               a.value_select,
+               a.value_type
+        from `pms_attr_group` g
+                 left join `pms_attr_group_relation` r on g.attr_group_id = r.attr_group_id
+                 left join `pms_attr` a on r.attr_id = a.attr_id
+        where g.catelog_id = #{categoryId,jdbcType=BIGINT};
+    </select>
 </mapper>

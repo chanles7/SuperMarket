@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.mail.user.entity.MemberReceiveAddressEntity;
 import com.mail.user.service.MemberReceiveAddressService;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.R;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 
 
 

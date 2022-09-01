@@ -1,20 +1,19 @@
 package com.mail.product.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.mail.common.utils.R;
-import com.mail.product.vo.CategoryEntityVO;
+import com.mail.common.util.R;
+import com.mail.product.vo.response.CategoryRespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.utils.PageUtils;
-import com.mail.common.utils.Query;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
 
 import com.mail.product.dao.CategoryDao;
 import com.mail.product.entity.CategoryEntity;
@@ -42,7 +41,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
 
     @Override
-    public List<CategoryEntityVO> listAllWithTree() {
+    public List<CategoryRespVO> listAllWithTree() {
         List<CategoryEntity> categoryEntityList = query().list();
         return this.castListToTree(categoryEntityList, 0L);
     }
@@ -55,13 +54,13 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
      * @param catId    父目录ID
      * @return 树形结构
      */
-    private List<CategoryEntityVO> castListToTree(List<CategoryEntity> entities, Long catId) {
+    private List<CategoryRespVO> castListToTree(List<CategoryEntity> entities, Long catId) {
         return entities.stream()
                 .filter(item -> catId.equals(item.getParentCid()))
-                .map(item -> BeanUtil.copyProperties(item, CategoryEntityVO.class))
+                .map(item -> BeanUtil.copyProperties(item, CategoryRespVO.class))
                 .peek(item -> {
                     if (item.getCatLevel() < 3) {
-                        item.setCategoryEntityVOs(this.castListToTree(entities, item.getCatId()));
+                        item.setChildren(this.castListToTree(entities, item.getCatId()));
                     }
                 })
                 .collect(Collectors.toList());
@@ -91,6 +90,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     public R updateCategoryById(CategoryEntity category) {
         log.info("要修改的商品分类信息为:{}", category);
 
+        //TODO 更新商品分类名称要同时更新关联表的商品分类信息
+
         return R.ok();
     }
 
@@ -98,5 +99,23 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
     @Override
     public List<CategoryEntity> getListByParentId(Long parentId) {
         return query().eq("parent_cid", parentId).list();
+    }
+
+
+    @Override
+    public Long[] getCurrentCategoryPath(Long categoryId) {
+        LinkedList<Long> path = new LinkedList<>();
+        getCurrentCategoryPath(categoryId, path);
+        return Arrays.copyOfRange(path.toArray(), 0, path.size(), Long[].class);
+    }
+
+
+    private void getCurrentCategoryPath(Long categoryId, LinkedList<Long> path) {
+        CategoryEntity category = this.baseMapper.selectById(categoryId);
+        if (category == null) return;
+        path.addFirst(category.getCatId());
+        if (category.getCatLevel() != 0) {
+            this.getCurrentCategoryPath(category.getParentCid(), path);
+        }
     }
 }
