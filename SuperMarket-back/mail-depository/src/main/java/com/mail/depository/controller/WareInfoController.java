@@ -15,6 +15,7 @@ import com.mail.depository.service.WareInfoService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -27,8 +28,10 @@ import com.mail.common.util.R;
 @RestController
 @RequestMapping("depository/wareinfo")
 public class WareInfoController {
-    @Autowired
+
+    @Resource
     private WareInfoService wareInfoService;
+
 
     /**
      * 列表
@@ -36,8 +39,7 @@ public class WareInfoController {
     @RequestMapping("/list")
     //@RequiresPermissions("depository:wareinfo:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wareInfoService.queryPage(params);
-
+        PageUtils page = wareInfoService.queryPageByCondition(params);
         return R.ok().put("page", page);
     }
 

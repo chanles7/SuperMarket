@@ -1,38 +1,60 @@
 package com.mail.product.vo.request;
 
-import com.mail.product.vo.response.AttrRespVO;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
+
 
 @Data
 public class SkuInfoReqVO {
 
-    private List<AttrRespVO> attr;
+    private List<AttrReqVO> attr;
 
     private String skuName;
 
-    private String price;
+    private BigDecimal price;
 
     private String skuTitle;
 
     private String skuSubtitle;
 
-    private List<String> images;
+    private List<ImageReqVO> images;
 
     private List<String> descar;
 
-    private int fullCount;
+    private Integer fullCount;
 
-    private int discount;
+    private BigDecimal discount;
 
-    private int countStatus;
+    private Integer countStatus;
 
-    private int fullPrice;
+    private BigDecimal fullPrice;
 
-    private int reducePrice;
+    private BigDecimal reducePrice;
 
-    private int priceStatus;
-    
+    private Integer priceStatus;
+
     private List<MemberPriceReqVO> memberPrice;
+
+
+    @Override
+    public String toString() {
+        return "SkuInfoReqVO{" +
+                "attr=" + attr +
+                ", " + '\n' + "skuName='" + skuName + '\'' +
+                ", price=" + price +
+                ", skuTitle='" + skuTitle + '\'' +
+                ", skuSubtitle='" + skuSubtitle + '\'' +
+                ", " + '\n' + "images=" + images +
+                ", descar=" + descar +
+                ", fullCount=" + fullCount +
+                ", discount=" + discount +
+                ", countStatus=" + countStatus +
+                ", fullPrice=" + fullPrice +
+                ", reducePrice=" + reducePrice +
+                ", priceStatus=" + priceStatus +
+                ", " + '\n' + "memberPriceReqVO=" + memberPrice +
+                '}';
+    }
 }

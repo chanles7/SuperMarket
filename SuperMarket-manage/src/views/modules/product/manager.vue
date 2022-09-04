@@ -20,14 +20,7 @@
         </el-form-item>
       </el-form>
     </el-form>
-    <el-table
-      :data="dataList"
-      border
-      v-loading="dataListLoading"
-      @selection-change="selectionChangeHandle"
-      style="width: 100%;"
-      @expand-change="getSkuDetails"
-    >
+    <el-table :data="dataList" border v-loading="dataListLoading" @selection-change="selectionChangeHandle" style="width: 100%;" @expand-change="getSkuDetails">
       <el-table-column type="expand">
         <template slot-scope="scope">
           商品标题：{{scope.row.skuTitle}}
@@ -36,7 +29,7 @@
           <br />
           商品描述：{{scope.row.skuDesc}}
           <br />
-          分类ID：{{scope.row.catalogId}}
+          分类ID：{{scope.row.categoryId}}
           <br />
           SpuID：{{scope.row.spuId}}
           <br />
@@ -58,12 +51,7 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="previewHandle(scope.row.skuId)">预览</el-button>
           <el-button type="text" size="small" @click="commentHandle(scope.row.skuId)">评论</el-button>
-          <el-dropdown
-            @command="handleCommand(scope.row,$event)"
-            size="small"
-            split-button
-            type="text"
-          >
+          <el-dropdown @command="handleCommand(scope.row,$event)" size="small" split-button type="text">
             更多
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item command="uploadImages">上传图片</el-dropdown-item>
@@ -78,15 +66,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="sizeChangeHandle"
-      @current-change="currentChangeHandle"
-      :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageSize"
-      :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper"
-    ></el-pagination>
+    <el-pagination @size-change="sizeChangeHandle" @current-change="currentChangeHandle" :current-page="pageIndex" :page-sizes="[10, 20, 50, 100]" :page-size="pageSize" :total="totalPage" layout="total, sizes, prev, pager, next, jumper"></el-pagination>
   </div>
 </template>
 
@@ -100,12 +80,12 @@ export default {
       brandIdSub: null,
       dataForm: {
         key: "",
-        brandId: 0,
-        catelogId: 0,
+        brandId: "",
+        categoryId: "",
         price: {
-          min: 0,
-          max: 0
-        }
+          min: "",
+          max: "",
+        },
       },
       dataList: [],
       pageIndex: 1,
@@ -114,12 +94,12 @@ export default {
       dataListLoading: false,
       dataListSelections: [],
       addOrUpdateVisible: false,
-      catelogPath: []
+      catelogPath: [],
     };
   },
   components: {
     CategoryCascader,
-    BrandSelect
+    BrandSelect,
   },
   activated() {
     this.getDataList();
@@ -149,13 +129,13 @@ export default {
           page: this.pageIndex,
           limit: this.pageSize,
           key: this.dataForm.key,
-          catelogId: this.dataForm.catelogId,
+          categoryId: this.dataForm.categoryId,
           brandId: this.dataForm.brandId,
           min: this.dataForm.price.min,
-          max: this.dataForm.price.max
-        })
+          max: this.dataForm.price.max,
+        }),
       }).then(({ data }) => {
-        if (data && data.code === 0) {
+        if (data && data.code === 200) {
           this.dataList = data.page.list;
           this.totalPage = data.page.totalCount;
         } else {
@@ -179,11 +159,11 @@ export default {
     // 多选
     selectionChangeHandle(val) {
       this.dataListSelections = val;
-    }
+    },
   },
   mounted() {
     this.catPathSub = PubSub.subscribe("catPath", (msg, val) => {
-      this.dataForm.catelogId = val[val.length - 1];
+      this.dataForm.categoryId = val[val.length - 1];
     });
     this.brandIdSub = PubSub.subscribe("brandId", (msg, val) => {
       this.dataForm.brandId = val;
@@ -192,6 +172,6 @@ export default {
   beforeDestroy() {
     PubSub.unsubscribe(this.catPathSub);
     PubSub.unsubscribe(this.brandIdSub);
-  } //生命周期 - 销毁之前
+  }, //生命周期 - 销毁之前
 };
 </script>

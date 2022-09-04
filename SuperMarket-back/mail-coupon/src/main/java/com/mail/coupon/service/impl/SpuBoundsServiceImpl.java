@@ -1,5 +1,7 @@
 package com.mail.coupon.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import com.mail.common.to.SpuBoundTO;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -26,4 +28,10 @@ public class SpuBoundsServiceImpl extends ServiceImpl<SpuBoundsDao, SpuBoundsEnt
         return new PageUtils(page);
     }
 
+
+    @Override
+    public void saveSpuBound(SpuBoundTO spuBoundTO) {
+        SpuBoundsEntity spuBoundsEntity = BeanUtil.copyProperties(spuBoundTO, SpuBoundsEntity.class);
+        this.save(spuBoundsEntity);
+    }
 }

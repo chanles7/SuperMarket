@@ -56,7 +56,7 @@ export default {
         if (this.dataForm.id) {
           this.$http({
             url: this.$http.adornUrl(
-              `/ware/wareordertaskdetail/info/${this.dataForm.id}`
+              `/depository/wareordertaskdetail/info/${this.dataForm.id}`
             ),
             method: "get",
             params: this.$http.adornParams(),
@@ -77,7 +77,7 @@ export default {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/ware/wareordertaskdetail/${
+              `/depository/wareordertaskdetail/${
                 !this.dataForm.id ? "save" : "update"
               }`
             ),

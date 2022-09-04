@@ -36,13 +36,13 @@
                 <template slot="prepend">成长值</template>
               </el-input-number>
             </el-form-item>
-            <!-- <el-form-item label="商品介绍" prop="decript">
+            <el-form-item label="商品介绍" prop="decript">
               <MultiUpload v-model="spu.decript" />
             </el-form-item>
 
             <el-form-item label="商品图集" prop="images">
               <MultiUpload v-model="spu.images" />
-            </el-form-item> -->
+            </el-form-item>
             <el-form-item>
               <el-button type="success" @click="collectSpuBaseInfo">下一步：设置基本参数</el-button>
             </el-form-item>
@@ -561,7 +561,6 @@ export default {
     },
 
     submitSkus() {
-      console.log("~~~~~", JSON.stringify(this.spu));
       this.$confirm("将要提交商品数据，需要一小段时间，是否继续?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -573,7 +572,7 @@ export default {
             method: "post",
             data: this.$http.adornData(this.spu, false),
           }).then(({ data }) => {
-            if (data.code == 0) {
+            if (data.code == 200) {
               this.$message({
                 type: "success",
                 message: "新增商品成功!",

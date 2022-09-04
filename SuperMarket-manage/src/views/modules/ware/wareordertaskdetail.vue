@@ -65,7 +65,7 @@ export default {
     getDataList() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/ware/wareordertaskdetail/list"),
+        url: this.$http.adornUrl("/depository/wareordertaskdetail/list"),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
@@ -122,7 +122,7 @@ export default {
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl("/ware/wareordertaskdetail/delete"),
+          url: this.$http.adornUrl("/depository/wareordertaskdetail/delete"),
           method: "post",
           data: this.$http.adornData(ids, false),
         }).then(({ data }) => {

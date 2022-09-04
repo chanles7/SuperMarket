@@ -21,6 +21,10 @@ public class AttrReqVO {
      */
     private String attrName;
     /**
+     * 属性值
+     */
+    private String attrValue;
+    /**
      * 是否需要检索[0-不需要，1-需要]
      */
     private Integer searchType;

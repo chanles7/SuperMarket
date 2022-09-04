@@ -48,7 +48,9 @@ export default {
         this.$refs["dataForm"].resetFields();
         if (this.dataForm.id) {
           this.$http({
-            url: this.$http.adornUrl(`/ware/wareinfo/info/${this.dataForm.id}`),
+            url: this.$http.adornUrl(
+              `/depository/wareinfo/info/${this.dataForm.id}`
+            ),
             method: "get",
             params: this.$http.adornParams(),
           }).then(({ data }) => {
@@ -67,7 +69,7 @@ export default {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/ware/wareinfo/${!this.dataForm.id ? "save" : "update"}`
+              `/depository/wareinfo/${!this.dataForm.id ? "save" : "update"}`
             ),
             method: "post",
             data: this.$http.adornData({

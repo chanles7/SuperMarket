@@ -15,6 +15,7 @@ import com.mail.product.service.SkuInfoService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -27,17 +28,17 @@ import com.mail.common.util.R;
 @RestController
 @RequestMapping("product/skuinfo")
 public class SkuInfoController {
-    @Autowired
+
+    @Resource
     private SkuInfoService skuInfoService;
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @RequestMapping("list")
     //@RequiresPermissions("product:skuinfo:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = skuInfoService.queryPage(params);
-
+        PageUtils page = skuInfoService.queryPageByCondition(params);
         return R.ok().put("page", page);
     }
 

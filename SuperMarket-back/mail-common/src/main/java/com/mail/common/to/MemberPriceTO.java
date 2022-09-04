@@ -1,11 +1,11 @@
-package com.mail.product.vo.request;
+package com.mail.common.to;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
 @Data
-public class MemberPriceReqVO {
+public class MemberPriceTO {
 
     private Long id;
 

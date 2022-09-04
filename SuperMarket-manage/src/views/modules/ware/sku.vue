@@ -69,7 +69,7 @@ export default {
   methods: {
     getWares() {
       this.$http({
-        url: this.$http.adornUrl("/ware/wareinfo/list"),
+        url: this.$http.adornUrl("/depository/wareinfo/list"),
         method: "get",
         params: this.$http.adornParams({
           page: 1,
@@ -83,7 +83,7 @@ export default {
     getDataList() {
       this.dataListLoading = true;
       this.$http({
-        url: this.$http.adornUrl("/ware/waresku/list"),
+        url: this.$http.adornUrl("/depository/waresku/list"),
         method: "get",
         params: this.$http.adornParams({
           page: this.pageIndex,
@@ -141,7 +141,7 @@ export default {
         }
       ).then(() => {
         this.$http({
-          url: this.$http.adornUrl("/ware/waresku/delete"),
+          url: this.$http.adornUrl("/depository/waresku/delete"),
           method: "post",
           data: this.$http.adornData(ids, false),
         }).then(({ data }) => {

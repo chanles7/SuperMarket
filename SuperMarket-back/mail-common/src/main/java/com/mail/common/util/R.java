@@ -81,4 +81,9 @@ public class R extends HashMap<String, Object> {
 		super.put("msg", msg);
 		return this;
 	}
+
+	public Integer getCode() {
+		return (Integer) this.get("code");
+	}
+
 }
