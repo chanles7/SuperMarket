@@ -147,11 +147,11 @@ export default {
     },
     getUnreceivedPurchase() {
       this.$http({
-        url: this.$http.adornUrl("/depository/purchase/unreceive/list"),
+        url: this.$http.adornUrl("/depository/purchase/assignable/list"),
         method: "get",
         params: this.$http.adornParams({}),
       }).then(({ data }) => {
-        this.purchasetableData = data.page.list;
+        this.purchasetableData = data.data;
       });
     },
     handleBatchCommand(cmd) {

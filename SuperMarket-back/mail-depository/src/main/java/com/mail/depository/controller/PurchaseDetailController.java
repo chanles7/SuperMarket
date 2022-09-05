@@ -15,6 +15,7 @@ import com.mail.depository.service.PurchaseDetailService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -27,7 +28,8 @@ import com.mail.common.util.R;
 @RestController
 @RequestMapping("depository/purchasedetail")
 public class PurchaseDetailController {
-    @Autowired
+
+    @Resource
     private PurchaseDetailService purchaseDetailService;
 
     /**
@@ -36,8 +38,7 @@ public class PurchaseDetailController {
     @RequestMapping("/list")
     //@RequiresPermissions("depository:purchasedetail:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = purchaseDetailService.queryPage(params);
-
+        PageUtils page = purchaseDetailService.queryPageByCondition(params);
         return R.ok().put("page", page);
     }
 

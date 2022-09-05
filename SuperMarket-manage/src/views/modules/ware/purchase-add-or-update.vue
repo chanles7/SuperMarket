@@ -93,7 +93,7 @@ export default {
         if (valid) {
           this.$http({
             url: this.$http.adornUrl(
-              `/ware/purchase/${!this.dataForm.id ? "save" : "update"}`
+              `/depository/purchase/${!this.dataForm.id ? "save" : "update"}`
             ),
             method: "post",
             data: this.$http.adornData({

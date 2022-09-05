@@ -15,6 +15,7 @@ import com.mail.depository.service.WareSkuService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
 
+import javax.annotation.Resource;
 
 
 /**
@@ -27,17 +28,18 @@ import com.mail.common.util.R;
 @RestController
 @RequestMapping("depository/waresku")
 public class WareSkuController {
-    @Autowired
+
+    @Resource
     private WareSkuService wareSkuService;
+
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @RequestMapping("list")
     //@RequiresPermissions("depository:waresku:list")
     public R list(@RequestParam Map<String, Object> params){
-        PageUtils page = wareSkuService.queryPage(params);
-
+        PageUtils page = wareSkuService.queryPageByCondition(params);
         return R.ok().put("page", page);
     }
 
