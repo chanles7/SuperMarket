@@ -88,7 +88,7 @@ public class ProductAttrValueController {
      */
     @GetMapping("value/{spuId}/list")
     public R getProductAttrValueListBySpuId(@PathVariable Long spuId) {
-        List<ProductAttrValueEntity> productAttrValueList = productAttrValueService.getProductAttrValueListBySpuId(spuId);
+        List<ProductAttrValueEntity> productAttrValueList = productAttrValueService.listBySpuId(spuId);
         return R.ok(productAttrValueList);
     }
 

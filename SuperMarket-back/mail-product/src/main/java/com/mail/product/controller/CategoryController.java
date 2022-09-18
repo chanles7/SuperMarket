@@ -1,16 +1,14 @@
 package com.mail.product.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
+import com.mail.common.util.R;
+import com.mail.product.entity.CategoryEntity;
+import com.mail.product.service.CategoryService;
 import com.mail.product.vo.response.CategoryRespVO;
 import org.springframework.web.bind.annotation.*;
 
-import com.mail.product.entity.CategoryEntity;
-import com.mail.product.service.CategoryService;
-import com.mail.common.util.R;
-
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -79,5 +77,12 @@ public class CategoryController {
         return categoryService.removeCategories(Arrays.asList(catIds));
     }
 
+
+
+    @GetMapping("list")
+    //@RequiresPermissions("product:category:delete")
+    public R list() {
+        return R.ok(categoryService.getAllCategoryList());
+    }
 
 }

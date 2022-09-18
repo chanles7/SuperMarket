@@ -1,25 +1,26 @@
 package com.mail.product.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.mail.common.util.R;
-import com.mail.product.vo.response.CategoryRespVO;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.Query;
-
+import com.mail.common.util.R;
 import com.mail.product.dao.CategoryDao;
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.CategoryService;
+import com.mail.product.vo.response.CategoryRespVO;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("categoryService")
@@ -42,8 +43,19 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public List<CategoryRespVO> listAllWithTree() {
-        List<CategoryEntity> categoryEntityList = query().list();
+        List<CategoryEntity> categoryEntityList = this.getAllCategoryList();
         return this.castListToTree(categoryEntityList, 0L);
+    }
+
+
+    @Cacheable(value = "category")
+    @Override
+    public List<CategoryEntity> getAllCategoryList() {
+        long start = System.currentTimeMillis();
+        List<CategoryEntity> categoryEntityList = query().list();
+        long end = System.currentTimeMillis();
+        log.info("查询数据库执行了{}ms", end - start);
+        return categoryEntityList;
     }
 
 

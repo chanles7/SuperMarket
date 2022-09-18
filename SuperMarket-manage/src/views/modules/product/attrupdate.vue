@@ -100,7 +100,6 @@ export default {
       });
     },
     submitSpuAttrs() {
-      console.log("·····", this.dataResp.baseAttrs);
       //spu_id  attr_id  attr_name             attr_value             attr_sort  quick_show
       let submitData = [];
       this.dataResp.baseAttrs.forEach((item) => {

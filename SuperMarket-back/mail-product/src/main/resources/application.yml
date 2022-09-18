@@ -10,6 +10,12 @@ spring:
   jackson:
     default-property-inclusion: non_null
     date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    host: 192.168.152.128
+  cache:
+    type: redis
+    redis:
+      time-to-live: 3000
 
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml
@@ -22,4 +28,7 @@ mybatis-plus:
 logging:
   level:
     com.mail: info
+    com.alibaba.nacos.client.naming: warn
+
+
 

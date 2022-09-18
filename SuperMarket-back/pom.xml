@@ -10,6 +10,8 @@
     <description>商城</description>
     <packaging>pom</packaging>
 
+
+
     <modules>
         <module>third-party-service</module>
         <module>mail-coupon</module>
@@ -21,6 +23,7 @@
         <module>renren-generator</module>
         <module>mail-common</module>
         <module>mail-gateway</module>
+        <module>mail-search</module>
     </modules>
 
 </project>

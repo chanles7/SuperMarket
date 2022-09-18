@@ -31,7 +31,7 @@ public class ProductAttrValueServiceImpl extends ServiceImpl<ProductAttrValueDao
 
 
     @Override
-    public List<ProductAttrValueEntity> getProductAttrValueListBySpuId(Long spuId) {
+    public List<ProductAttrValueEntity> listBySpuId(Long spuId) {
         return this.query().eq("spu_id", spuId).list();
     }
 }

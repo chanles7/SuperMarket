@@ -5,6 +5,7 @@ import com.mail.common.util.PageUtils;
 import com.mail.depository.entity.WareSkuEntity;
 import com.mail.depository.vo.request.DepositorySkuReqVO;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,5 +20,7 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     PageUtils queryPageByCondition(Map<String, Object> params);
 
     void addStock(DepositorySkuReqVO depositorySkuReqVO);
+
+    Map<Long, Boolean> getHasStock(List<Long> ids);
 }
 

@@ -2,34 +2,37 @@ package com.mail.product.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.TypeReference;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mail.common.to.SkuReductionTO;
 import com.mail.common.to.SpuBoundTO;
+import com.mail.common.to.es.SkuInfoEsTO;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
 import com.mail.common.util.R;
+import com.mail.product.dao.SpuInfoDao;
 import com.mail.product.entity.*;
 import com.mail.product.feign.CouponFeignService;
+import com.mail.product.feign.DepositoryFeignService;
+import com.mail.product.feign.SearchFeignService;
 import com.mail.product.service.*;
 import com.mail.product.vo.request.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.Query;
+import static com.mail.common.constant.product.ProductConstant.SPU_PUBLISH_STATUS_UP;
 
-import com.mail.product.dao.SpuInfoDao;
-import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Resource;
-import javax.swing.*;
 
 @Slf4j
 @Service("spuInfoService")
@@ -51,6 +54,14 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     private SkuSaleAttrValueService skuSaleAttrValueService;
     @Resource
     private CouponFeignService couponFeignService;
+    @Resource
+    private BrandService brandService;
+    @Resource
+    private CategoryService categoryService;
+    @Resource
+    private DepositoryFeignService depositoryFeignService;
+    @Resource
+    private SearchFeignService searchFeignService;
 
 
     @Override
@@ -199,5 +210,95 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
         }
         IPage<SpuInfoEntity> page = this.page(new Query<SpuInfoEntity>().getPage(params), wrapper);
         return new PageUtils(page);
+    }
+
+
+    @Transactional
+    @Override
+    public void upShelf(Long spuId) {
+        //1、组装es数据发送
+        List<SkuInfoEntity> skus = skuInfoService.getSkusBySpuId(spuId);
+        List<SkuInfoEsTO> skuInfoEsList = skus.stream()
+                .map(sku -> {
+                    SkuInfoEsTO skuInfoEsTO = BeanUtil.copyProperties(sku, SkuInfoEsTO.class);
+                    //skuPrice、skuImg、hasStock、hotScore;
+                    //brandName、brandImg、categoryId、categoryName;
+                    //attrs;
+                    skuInfoEsTO.setSkuPrice(sku.getPrice());
+                    skuInfoEsTO.setSkuImg(sku.getSkuDefaultImg());
+                    //TODO 热度评分
+                    skuInfoEsTO.setHotScore(0L);
+
+
+                    //设置分类及品牌信息
+                    BrandEntity brand = brandService.getById(sku.getBrandId());
+                    skuInfoEsTO.setBrandName(brand.getName());
+                    skuInfoEsTO.setBrandImg(brand.getLogo());
+                    CategoryEntity category = categoryService.getById(sku.getCatalogId());
+                    skuInfoEsTO.setCategoryId(category.getCatId());
+                    skuInfoEsTO.setCategoryName(category.getName());
+
+
+                    //查询sku可以被检索的属性信息
+                    List<SkuSaleAttrValueEntity> skuAttrValueList = skuSaleAttrValueService.listBySkuId(sku.getSkuId());
+                    skuInfoEsTO.setAttrs(
+                            skuAttrValueList.stream()
+                                    .filter(attr -> attrService.whetherCanBeRetrieved(attr.getAttrId()))
+                                    .map(attr -> BeanUtil.copyProperties(attr, SkuInfoEsTO.Attr.class))
+                                    .collect(Collectors.toList())
+                    );
+                    return skuInfoEsTO;
+                })
+                .collect(Collectors.toList());
+
+
+        //查询spu可以被检索的属性信息
+        List<ProductAttrValueEntity> productAttrValueList = productAttrValueService.listBySpuId(spuId);
+        List<SkuInfoEsTO.Attr> attrList = productAttrValueList.stream()
+                .filter(attr -> attrService.whetherCanBeRetrieved(attr.getAttrId()))
+                .map(attr -> BeanUtil.copyProperties(attr, SkuInfoEsTO.Attr.class))
+                .collect(Collectors.toList());
+        skuInfoEsList.forEach(sku -> sku.getAttrs().addAll(attrList));
+
+
+        //发送远程调用库存系统查询库存
+        try {
+            R r = depositoryFeignService.getHasStock(
+                    skuInfoEsList.stream()
+                            .map(SkuInfoEsTO::getSkuId)
+                            .collect(Collectors.toList())
+            );
+            if (r.getCode() == 200) {
+                Map<Long, Boolean> data = r.getData(new TypeReference<Map<Long, Boolean>>() {
+                });
+                skuInfoEsList.forEach(sku -> sku.setHasStock(data.get(sku.getSkuId()) != null && data.get(sku.getSkuId())));
+            } else {
+                skuInfoEsList.forEach(sku -> sku.setHasStock(false));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("库存服务查询异常");
+            skuInfoEsList.forEach(sku -> sku.setHasStock(false));
+        }
+
+
+        //发送远程调用es保存数据
+        try {
+            R r = searchFeignService.skuInfoUpShelf(skuInfoEsList);
+            if (r.getCode() != 200) {
+                throw new RuntimeException();
+            }
+        } catch (Exception e) {
+            //  TODO 重试
+            throw new RuntimeException();
+        }
+
+
+        //2、更新数据库Spu状态为上架
+        this.update().eq("id", spuId)
+                .set("publish_status", SPU_PUBLISH_STATUS_UP)
+                .set("update_time", new Date())
+                .update();
+
     }
 }

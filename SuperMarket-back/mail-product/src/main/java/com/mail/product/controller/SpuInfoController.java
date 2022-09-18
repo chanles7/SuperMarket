@@ -1,21 +1,15 @@
 package com.mail.product.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import com.mail.product.vo.request.SpuInfoReqVO;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.mail.product.entity.SpuInfoEntity;
-import com.mail.product.service.SpuInfoService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
+import com.mail.product.entity.SpuInfoEntity;
+import com.mail.product.service.SpuInfoService;
+import com.mail.product.vo.request.SpuInfoReqVO;
+import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Map;
 
 
 /**
@@ -28,13 +22,16 @@ import com.mail.common.util.R;
 @RestController
 @RequestMapping("product/spuinfo")
 public class SpuInfoController {
-    @Autowired
+
+
+    @Resource
     private SpuInfoService spuInfoService;
+
 
     /**
      * 列表
      */
-    @RequestMapping("/list")
+    @RequestMapping("list")
     //@RequiresPermissions("product:spuinfo:list")
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = spuInfoService.queryPageByCondition(params);
@@ -64,6 +61,7 @@ public class SpuInfoController {
         return R.ok();
     }
 
+
     /**
      * 修改
      */
@@ -75,6 +73,7 @@ public class SpuInfoController {
         return R.ok();
     }
 
+
     /**
      * 删除
      */
@@ -83,6 +82,16 @@ public class SpuInfoController {
     public R delete(@RequestBody Long[] ids){
 		spuInfoService.removeByIds(Arrays.asList(ids));
 
+        return R.ok();
+    }
+
+
+    /**
+     * spu上架
+     */
+    @PostMapping("{spuId}/shelf/up")
+    public R upShelf(@PathVariable Long spuId) {
+        spuInfoService.upShelf(spuId);
         return R.ok();
     }
 

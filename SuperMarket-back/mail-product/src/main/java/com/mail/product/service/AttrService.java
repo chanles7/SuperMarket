@@ -30,6 +30,8 @@ public interface AttrService extends IService<AttrEntity> {
 
     List<AttrEntity> getAttrListByRelation(Long attrGroupId);
 
+    boolean whetherCanBeRetrieved(Long attrId);
+
 }
 
 

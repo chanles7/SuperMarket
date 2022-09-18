@@ -1,13 +1,25 @@
 package com.mail.coupon;
 
-import org.junit.jupiter.api.Test;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
+
+
+@Slf4j
 @SpringBootTest
-class MailCouponApplicationTests {
+@RunWith(SpringRunner.class)
+public class MailCouponApplicationTests {
+
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
+
     }
+
 
 }

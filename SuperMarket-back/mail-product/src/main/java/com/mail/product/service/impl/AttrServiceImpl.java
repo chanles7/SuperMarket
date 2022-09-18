@@ -31,8 +31,8 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 
-import static com.mail.common.constant.product.AttrTypeEnum.ATTR_TYPE_BASE;
-import static com.mail.common.constant.product.AttrTypeEnum.ATTR_TYPE_SALE;
+import static com.mail.common.constant.product.AttrTypeEnum.*;
+import static com.mail.common.constant.product.ProductConstant.*;
 
 
 @Slf4j
@@ -153,4 +153,10 @@ public class AttrServiceImpl extends ServiceImpl<AttrDao, AttrEntity> implements
         return attrDao.getAttrListByRelation(attrGroupId);
     }
 
+
+    @Override
+    public boolean whetherCanBeRetrieved(Long attrId) {
+        AttrEntity attr = this.getById(attrId);
+        return CAN_BE_RETRIEVED.equals(attr.getSearchType());
+    }
 }

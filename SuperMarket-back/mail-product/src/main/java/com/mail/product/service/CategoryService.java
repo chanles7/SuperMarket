@@ -43,6 +43,9 @@ public interface CategoryService extends IService<CategoryEntity> {
      * @return 完整路径
      */
     Long[] getCurrentCategoryPath(Long categoryId);
+
+
+    List<CategoryEntity> getAllCategoryList();
 }
 
 

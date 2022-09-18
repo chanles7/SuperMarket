@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mail.depository.dao.WareSkuDao">
-
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.mail.depository.entity.WareSkuEntity" id="wareSkuMap">
         <result property="id" column="id"/>
         <result property="skuId" column="sku_id"/>
@@ -14,4 +13,21 @@
     </resultMap>
 
 
+    <resultMap id="LongAndBooleanMap" type="java.util.Map">
+        <result column="key" property="key" javaType="java.lang.Long"/>
+        <result column="value" property="value" javaType="java.lang.Boolean"/>
+    </resultMap>
+
+
+    <select id="getStockBySkuId" resultMap="LongAndBooleanMap">
+        select sku_id as `key`,
+        case when sum(stock - stock_locked) > 0 then true else false end as `value`
+        from `dms_ware_sku`
+        <where>
+            <foreach collection="ids" item="id" open=" sku_id in (" close=")" separator=", ">
+                #{id}
+            </foreach>
+        </where>
+        group by sku_id
+    </select>
 </mapper>

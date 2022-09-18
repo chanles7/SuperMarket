@@ -5,12 +5,19 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: search_route
+          uri: lb://mail-search
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
         - id: third_party_route
           uri: lb://third-party-service
           predicates:
             - Path=/api/third/**
           filters:
-            - RewritePath=/api/third/(?<segment>.*),/$\{segment}
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
 
         - id: coupon_route
           uri: lb://mail-coupon

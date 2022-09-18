@@ -6,9 +6,14 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.mail.common.util.R;
 import com.mail.depository.feign.ProductFeignService;
 import com.mail.depository.vo.request.DepositorySkuReqVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -23,12 +28,15 @@ import com.mail.depository.service.WareSkuService;
 import javax.annotation.Resource;
 
 
+@Slf4j
 @Service("wareSkuService")
 public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> implements WareSkuService {
 
 
     @Resource
     private ProductFeignService productFeignService;
+    @Resource
+    private WareSkuDao wareSkuDao;
 
 
     @Override
@@ -66,5 +74,14 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
             }
             this.save(wareSkuEntity);
         }
+    }
+
+
+    @Override
+    public Map<Long, Boolean> getHasStock(List<Long> ids) {
+        Map<Long, Boolean> map = new HashMap<>();
+        List<Map<String, Object>> mapList = wareSkuDao.getStockBySkuId(ids);
+        mapList.forEach(item -> map.put((Long) item.get("key"), (Boolean) item.get("value")));
+        return map;
     }
 }
