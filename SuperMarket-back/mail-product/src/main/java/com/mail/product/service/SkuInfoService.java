@@ -1,8 +1,9 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.util.PageUtils;
 import com.mail.product.entity.SkuInfoEntity;
+import com.mail.common.util.PageUtils;
+import com.mail.product.vo.response.SkuDetailInfoRespVO;
 
 import java.util.List;
 import java.util.Map;
@@ -20,5 +21,6 @@ public interface SkuInfoService extends IService<SkuInfoEntity> {
 
     List<SkuInfoEntity> getSkusBySpuId(Long spuId);
 
+    SkuDetailInfoRespVO getDetailInfoBySkuId(Long skuId);
 }
 

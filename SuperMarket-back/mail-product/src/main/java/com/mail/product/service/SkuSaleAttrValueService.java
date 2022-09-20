@@ -3,6 +3,7 @@ package com.mail.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mail.common.util.PageUtils;
 import com.mail.product.entity.SkuSaleAttrValueEntity;
+import com.mail.product.vo.response.AttrRespVO;
 
 import java.util.List;
 import java.util.Map;
@@ -19,5 +20,14 @@ public interface SkuSaleAttrValueService extends IService<SkuSaleAttrValueEntity
     PageUtils queryPage(Map<String, Object> params);
 
     List<SkuSaleAttrValueEntity> listBySkuId(Long skuId);
+
+
+    /**
+     * 通过spuId查询其下的所有相关sku的销售属性信息
+     *
+     * @param spuId
+     * @return
+     */
+    List<AttrRespVO> getSkuSaleAttrValueBySpuId(Long spuId);
 }
 

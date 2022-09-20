@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.mail</groupId>
-    <artifactId>third</artifactId>
+    <artifactId>mail-third</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>third-party-service</name>
-    <description>third-party-service</description>
+    <name>mail-third</name>
+    <description>mail-third</description>
     <properties>
         <java.version>1.8</java.version>
         <spring-cloud.version>Greenwich.SR3</spring-cloud.version>

@@ -1,11 +1,13 @@
 package com.mail.product.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.mail.product.dao.AttrDao;
+import com.mail.product.entity.AttrEntity;
+import com.mail.product.entity.AttrGroupEntity;
+import com.mail.product.entity.CategoryEntity;
 import com.mail.common.util.R;
 import com.mail.common.util.Transform;
-import com.mail.product.entity.AttrGroupEntity;
 import com.mail.product.entity.AttrGroupRelationEntity;
-import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.AttrGroupRelationService;
 import com.mail.product.service.AttrGroupService;
 import com.mail.product.service.CategoryService;
@@ -24,8 +26,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.Query;
 
-import com.mail.product.dao.AttrDao;
-import com.mail.product.entity.AttrEntity;
 import com.mail.product.service.AttrService;
 import org.springframework.util.StringUtils;
 

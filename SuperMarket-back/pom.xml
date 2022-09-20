@@ -13,14 +13,12 @@
 
 
     <modules>
-        <module>third-party-service</module>
         <module>mail-coupon</module>
         <module>mail-depository</module>
         <module>mail-order</module>
         <module>mail-product</module>
         <module>mail-user</module>
         <module>renren-fast</module>
-        <module>renren-generator</module>
         <module>mail-common</module>
         <module>mail-gateway</module>
         <module>mail-search</module>

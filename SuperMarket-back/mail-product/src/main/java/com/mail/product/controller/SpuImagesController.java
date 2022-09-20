@@ -1,19 +1,14 @@
 package com.mail.product.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.mail.product.entity.SpuImagesEntity;
-import com.mail.product.service.SpuImagesService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
+import com.mail.product.entity.SpuImagesEntity;
+import com.mail.product.service.SpuImagesService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Map;
 
 
 

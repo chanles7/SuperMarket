@@ -3,6 +3,7 @@ package com.mail.product.controller;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.mail.product.entity.SkuSaleAttrValueEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mail.product.entity.SkuSaleAttrValueEntity;
 import com.mail.product.service.SkuSaleAttrValueService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;

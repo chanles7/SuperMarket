@@ -1,8 +1,8 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.util.PageUtils;
 import com.mail.product.entity.SpuInfoEntity;
+import com.mail.common.util.PageUtils;
 import com.mail.product.vo.request.SpuInfoReqVO;
 
 import java.util.Map;

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: third-party-service
+    name: mail-third
   cloud:
     nacos:
       config:

@@ -3,7 +3,6 @@ package com.mail.product.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mail.common.util.PageUtils;
 import com.mail.product.entity.CategoryBrandRelationEntity;
-import com.mail.product.vo.response.BrandRespVO;
 
 import java.util.List;
 import java.util.Map;

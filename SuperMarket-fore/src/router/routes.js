@@ -51,8 +51,8 @@ export default [
   },
   {
     name: 'detail', // 是当前路由的标识名称
-    path: '/detail/:skuId',
-    component: Detail,
+    path: '/detail',
+    component: () => import('@/view/Detail'),
   },
   {
     path: '/addcartsuccess',

@@ -1,12 +1,10 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mail.product.vo.request.AttrGroupRelationReqVO;
 import com.mail.common.util.PageUtils;
 import com.mail.product.entity.AttrGroupRelationEntity;
-import com.mail.product.vo.request.AttrGroupRelationReqVO;
-import com.mail.product.vo.response.AttrGroupRespVO;
 
-import java.util.List;
 import java.util.Map;
 
 /**

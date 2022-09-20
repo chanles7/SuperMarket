@@ -1,32 +1,32 @@
 package com.mail.product.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
+import com.mail.product.dao.AttrGroupDao;
 import com.mail.product.entity.AttrEntity;
+import com.mail.product.entity.AttrGroupEntity;
 import com.mail.product.entity.AttrGroupRelationEntity;
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.AttrGroupRelationService;
+import com.mail.product.service.AttrGroupService;
 import com.mail.product.service.AttrService;
 import com.mail.product.service.CategoryService;
 import com.mail.product.vo.response.AttrGroupRespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.Query;
-
-import com.mail.product.dao.AttrGroupDao;
-import com.mail.product.entity.AttrGroupEntity;
-import com.mail.product.service.AttrGroupService;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Slf4j

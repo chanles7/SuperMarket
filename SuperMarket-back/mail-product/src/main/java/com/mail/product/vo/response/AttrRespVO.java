@@ -61,4 +61,6 @@ public class AttrRespVO {
      * 当前商品分类路径
      */
     private Long[] categoryPath;
+
+    private String skuIds;
 }

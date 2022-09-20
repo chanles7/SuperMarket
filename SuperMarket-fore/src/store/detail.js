@@ -1,10 +1,10 @@
-import { reqGoodsInfo, reqAddOrUpdateShopCart } from "@/api";
+import { reqGoodsInfo, reqAddOrUpdateShopCart } from '@/api';
 //封装游客身份模块uuid--->生成一个随机字符串（不能在变了）
-import {getUUID} from '@/utils/uuid_token';
+import { getUUID } from '@/utils/uuid_token';
 const state = {
   goodInfo: {},
   //游客临时身份
-   uuid_token:getUUID()
+  uuid_token: getUUID(),
 };
 const mutations = {
   GETGOODINFO(state, goodInfo) {
@@ -16,7 +16,7 @@ const actions = {
   async getGoodInfo({ commit }, skuId) {
     let result = await reqGoodsInfo(skuId);
     if (result.code == 200) {
-      commit("GETGOODINFO", result.data);
+      commit('GETGOODINFO', result.data);
     }
   },
   //加入购物车的||修改某一个产品的个数
@@ -27,10 +27,10 @@ const actions = {
     let result = await reqAddOrUpdateShopCart(skuId, skuNum);
     if (result.code == 200) {
       //返回的是成功的标记
-      return "ok";
+      return 'ok';
     } else {
       //返回的是失败的标记
-      return Promise.reject(new Error("faile"));
+      return Promise.reject(new Error('faile'));
     }
   },
 };
@@ -48,7 +48,10 @@ const getters = {
   },
   //产品售卖属性的简化
   spuSaleAttrList(state) {
-    return state.goodInfo.spuSaleAttrList || [];
+    return state.goodInfo.saleAttrList || [];
+  },
+  imagesList(state) {
+    return state.goodInfo.imagesList || [];
   },
 };
 export default {

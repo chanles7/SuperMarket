@@ -1,5 +1,6 @@
 package com.mail.product.service.impl;
 
+import com.mail.product.entity.SpuCommentEntity;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,7 +10,6 @@ import com.mail.common.util.PageUtils;
 import com.mail.common.util.Query;
 
 import com.mail.product.dao.SpuCommentDao;
-import com.mail.product.entity.SpuCommentEntity;
 import com.mail.product.service.SpuCommentService;
 
 

@@ -1,19 +1,17 @@
 package com.mail.product.controller;
 
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import cn.hutool.core.bean.BeanUtil;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
+import com.mail.product.entity.CategoryBrandRelationEntity;
+import com.mail.product.service.CategoryBrandRelationService;
 import com.mail.product.vo.response.BrandRespVO;
 import org.springframework.web.bind.annotation.*;
 
-import com.mail.product.entity.CategoryBrandRelationEntity;
-import com.mail.product.service.CategoryBrandRelationService;
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.R;
-
 import javax.annotation.Resource;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 
 /**

@@ -37,7 +37,7 @@
         <result column="descript" property="descript"/>
         <result column="catelog_id" property="catelogId"/>
         <result column="icon" property="icon"/>
-        <collection property="attrs" ofType="com.mail.product.vo.response.AttrRespVO">
+        <collection property="attrs" ofType="com.mail.product.entity.AttrEntity">
             <result column="attr_id" property="attrId"/>
             <result column="attr_name" property="attrName"/>
             <result column="show_desc" property="showDesc"/>

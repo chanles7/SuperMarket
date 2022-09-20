@@ -5,7 +5,6 @@ import com.mail.product.entity.BrandEntity;
 import com.mail.product.entity.CategoryEntity;
 import com.mail.product.service.BrandService;
 import com.mail.product.service.CategoryService;
-import com.mail.product.vo.response.BrandRespVO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

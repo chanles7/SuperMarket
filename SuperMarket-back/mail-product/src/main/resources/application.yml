@@ -1,6 +1,12 @@
 server:
   port: 8040
 
+mail:
+  thread:
+    core-size: 10
+    max-size: 100
+    keep-alive-time: 10
+
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

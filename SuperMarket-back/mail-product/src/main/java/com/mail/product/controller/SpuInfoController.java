@@ -1,10 +1,10 @@
 package com.mail.product.controller;
 
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.R;
 import com.mail.product.entity.SpuInfoEntity;
 import com.mail.product.service.SpuInfoService;
 import com.mail.product.vo.request.SpuInfoReqVO;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

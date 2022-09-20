@@ -22,9 +22,9 @@
         <!-- 左侧放大镜区域 -->
         <div class="previewWrap">
           <!--放大镜效果-->
-          <Zoom :skuImageList="skuImageList" />
+          <Zoom :skuImageList="imagesList" />
           <!-- 小图列表 -->
-          <ImageList :skuImageList="skuImageList" />
+          <ImageList :skuImageList="imagesList" />
         </div>
         <!-- 右侧选择区域布局 -->
         <div class="InfoWrap">
@@ -52,9 +52,7 @@
                 </div>
                 <div class="fixWidth">
                   <i class="red-bg">加价购</i>
-                  <em class="t-gray"
-                    >满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换购热销商品</em
-                  >
+                  <em class="t-gray">满999.00另加20.00元，或满1999.00另加30.00元，或满2999.00另加40.00元，即可在购物车换购热销商品</em>
                 </div>
               </div>
             </div>
@@ -77,43 +75,19 @@
           <div class="choose">
             <div class="chooseArea">
               <div class="choosed"></div>
-              <dl
-                v-for="(spuSaleAttr, index) in spuSaleAttrList"
-                :key="spuSaleAttr.id"
-              >
-                <dt class="title">{{ spuSaleAttr.saleAttrName }}</dt>
-                <dd
-                  changepirce="0"
-                  :class="{ active: spuSaleAttrValue.isChecked == 1 }"
-                  v-for="(spuSaleAttrValue,
-                  index) in spuSaleAttr.spuSaleAttrValueList"
-                  :key="spuSaleAttrValue.id"
-                  @click="
-                    changeActive(
-                      spuSaleAttrValue,
-                      spuSaleAttr.spuSaleAttrValueList
-                    )
-                  "
-                >
-                  {{ spuSaleAttrValue.saleAttrValueName }}
+              <dl v-for="(spuSaleAttr, index) in spuSaleAttrList" :key="spuSaleAttr.attrId">
+                <dt class="title">{{ spuSaleAttr.attrName }}</dt>
+                <dd changepirce="0" :class="{ active: spuSaleAttrValue.isChecked == 1 }" v-for="(spuSaleAttrValue,
+                  index) in spuSaleAttr.attrValueList" :key="index" @click="pchangeActive(spuSaleAttrValue,spuSaleAttr.attrValueList)">
+                  {{ spuSaleAttrValue.attrValue }}
                 </dd>
               </dl>
             </div>
             <div class="cartWrap">
               <div class="controls">
-                <input
-                  autocomplete="off"
-                  class="itxt"
-                  v-model="skuNum"
-                  @change="changeSkuNum"
-                />
+                <input autocomplete="off" class="itxt" v-model="skuNum" @change="changeSkuNum" />
                 <a href="javascript:" class="plus" @click="skuNum++">+</a>
-                <a
-                  href="javascript:"
-                  class="mins"
-                  @click="skuNum > 1 ? skuNum-- : (skuNum = 1)"
-                  >-</a
-                >
+                <a href="javascript:" class="mins" @click="skuNum > 1 ? skuNum-- : (skuNum = 1)">-</a>
               </div>
               <div class="add">
                 <!-- 以前咱们的路由跳转：从A路由跳转到B路由，这里在加入购物车，进行路由跳转之前，发请求
@@ -387,17 +361,13 @@ export default {
   },
   mounted() {
     //派发action获取产品详情的信息
-    this.$store.dispatch("getGoodInfo", this.$route.params.skuid);
+    this.$store.dispatch("getGoodInfo", this.$route.query.skuId);
   },
   computed: {
-    ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList"]),
-    //给子组件的数据
-    skuImageList() {
-      //如果服务器数据没有回来，skuInfo这个对象是空对象
-      return this.skuInfo.skuImageList || [];
-    },
+    ...mapGetters(["categoryView", "skuInfo", "spuSaleAttrList", "imagesList"]),
   },
   methods: {
+    //TODO 产品参数页面展示
     //产品的售卖属性值切换高亮
     changeActive(saleAttrValue, arr) {
       //遍历全部售卖属性值isChecked为零没有高亮了
@@ -435,509 +405,61 @@ export default {
         //一些简单的数据skuNum，通过query形式给路由组件传递过去
         //产品信息的数据【比较复杂:skuInfo】,通过会话存储（不持久化,会话结束数据在消失）
         //本地存储|会话存储，一般存储的是字符串
-        sessionStorage.setItem("SKUINFO",JSON.stringify(this.skuInfo));
-        this.$router.push({name:'addcartsuccess',query:{skuNum:this.skuNum}});
+        sessionStorage.setItem("SKUINFO", JSON.stringify(this.skuInfo));
+        this.$router.push({
+          name: "addcartsuccess",
+          query: { skuNum: this.skuNum },
+        });
       } catch (error) {
         //失败
         alert(error.message);
       }
+    },
+    pchangeActive(a, b) {
+      //TODO 优化
+      let alist = a.skuIds;
+      let blist = b.filter((item) => item.isChecked)[0].skuIds;
+      let list = [];
+      this.spuSaleAttrList.forEach((spuSaleAttr) => {
+        spuSaleAttr.attrValueList.forEach((attrValue) => {
+          if (attrValue.isChecked) {
+            if (this.arrCompare(attrValue.skuIds, blist)) {
+              list.push(alist);
+            } else {
+              list.push(attrValue.skuIds);
+            }
+          }
+        });
+      });
+      let res = list.reduce((aa, bb) => aa.filter((c) => bb.includes(c)))[0];
+      this.$router.push({ path: "/detail", query: { skuId: res } });
+      this.$store.dispatch("getGoodInfo", this.$route.query.skuId);
+    },
+    arrCompare(a1, a2) {
+      let newArr1 = []; //创建两个数组接受参数数组，因为sort方法会影响原数组
+      let newArr2 = [];
+      let res = true;
+      newArr1.push(...a1);
+      newArr2.push(...a2);
+      newArr1.sort((a, b) => a - b).sort(); //先按照数字排序，在按照字符排序（有对象的另外讨论）
+      newArr2.sort((a, b) => a - b).sort();
+      if (newArr1.length === newArr2.length) {
+        //判断长度，不相等直接false
+        newArr1.forEach((item, index) => {
+          if (item !== newArr2[index]) {
+            //用两个等号判断避免稀疏数组中的undefined会与另一个数组中的null值比较成功
+            res = false; //存在一个不同直接false
+          }
+        });
+      } else {
+        res = false;
+      }
+      return res;
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
-.detail {
-  .con {
-    width: 1200px;
-    margin: 15px auto 0;
-
-    .conPoin {
-      padding: 9px 15px 9px 0;
-
-      & > span + span:before {
-        content: "/\00a0";
-        padding: 0 5px;
-        color: #ccc;
-      }
-    }
-
-    .mainCon {
-      overflow: hidden;
-      margin: 5px 0 15px;
-
-      .previewWrap {
-        float: left;
-        width: 400px;
-        position: relative;
-      }
-
-      .InfoWrap {
-        width: 700px;
-        float: right;
-
-        .InfoName {
-          font-size: 14px;
-          line-height: 21px;
-          margin-top: 15px;
-        }
-
-        .news {
-          color: #e12228;
-          margin-top: 15px;
-        }
-
-        .priceArea {
-          background: #fee9eb;
-          padding: 7px;
-          margin: 13px 0;
-
-          .priceArea1 {
-            overflow: hidden;
-            line-height: 28px;
-            margin-top: 10px;
-
-            .title {
-              float: left;
-              margin-right: 15px;
-            }
-
-            .price {
-              float: left;
-              color: #c81623;
-
-              i {
-                font-size: 16px;
-              }
-
-              em {
-                font-size: 24px;
-                font-weight: 700;
-              }
-
-              span {
-                font-size: 12px;
-              }
-            }
-
-            .remark {
-              float: right;
-            }
-          }
-
-          .priceArea2 {
-            overflow: hidden;
-            line-height: 28px;
-            margin-top: 10px;
-
-            .title {
-              margin-right: 15px;
-              float: left;
-            }
-
-            .fixWidth {
-              width: 520px;
-              float: left;
-
-              .red-bg {
-                background: #c81623;
-                color: #fff;
-                padding: 3px;
-              }
-
-              .t-gray {
-                color: #999;
-              }
-            }
-          }
-        }
-
-        .support {
-          border-bottom: 1px solid #ededed;
-          padding-bottom: 5px;
-
-          .supportArea {
-            overflow: hidden;
-            line-height: 28px;
-            margin-top: 10px;
-
-            .title {
-              margin-right: 15px;
-              float: left;
-            }
-
-            .fixWidth {
-              width: 520px;
-              float: left;
-              color: #999;
-            }
-          }
-        }
-
-        .choose {
-          .chooseArea {
-            overflow: hidden;
-            line-height: 28px;
-            margin-top: 10px;
-
-            dl {
-              overflow: hidden;
-              margin: 13px 0;
-
-              dt {
-                margin-right: 15px;
-                float: left;
-              }
-
-              dd {
-                float: left;
-                margin-right: 5px;
-                color: #666;
-                line-height: 24px;
-                padding: 2px 14px;
-                border-top: 1px solid #eee;
-                border-right: 1px solid #bbb;
-                border-bottom: 1px solid #bbb;
-                border-left: 1px solid #eee;
-
-                &.active {
-                  color: green;
-                  border: 1px solid green;
-                }
-              }
-            }
-          }
-
-          .cartWrap {
-            .controls {
-              width: 48px;
-              position: relative;
-              float: left;
-              margin-right: 15px;
-
-              .itxt {
-                width: 38px;
-                height: 37px;
-                border: 1px solid #ddd;
-                color: #555;
-                float: left;
-                border-right: 0;
-                text-align: center;
-              }
-
-              .plus,
-              .mins {
-                width: 15px;
-                text-align: center;
-                height: 17px;
-                line-height: 17px;
-                background: #f1f1f1;
-                color: #666;
-                position: absolute;
-                right: -8px;
-                border: 1px solid #ccc;
-              }
-
-              .mins {
-                right: -8px;
-                top: 19px;
-                border-top: 0;
-              }
-
-              .plus {
-                right: -8px;
-              }
-            }
-
-            .add {
-              float: left;
-
-              a {
-                background-color: #e1251b;
-                padding: 0 25px;
-                font-size: 16px;
-                color: #fff;
-                height: 36px;
-                line-height: 36px;
-                display: block;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .product-detail {
-    width: 1200px;
-    margin: 30px auto 0;
-    overflow: hidden;
-
-    .aside {
-      width: 210px;
-      float: left;
-      border: 1px solid #ccc;
-
-      .tabWraped {
-        height: 40px;
-
-        h4 {
-          border-top: 3px solid #fff;
-          float: left;
-          line-height: 37px;
-          width: 105px;
-          text-align: center;
-          border-bottom: 1px solid #ccc;
-
-          &.active {
-            border-top: 3px solid #e1251b;
-            border-bottom: 0;
-            font-weight: normal;
-          }
-        }
-      }
-
-      .tabContent {
-        padding: 10px;
-
-        .tab-pane {
-          display: none;
-
-          &.active {
-            display: block;
-          }
-
-          &:nth-child(1) {
-            .partList {
-              overflow: hidden;
-
-              li {
-                width: 50%;
-                float: left;
-                border-bottom: 1px dashed #ededed;
-                line-height: 28px;
-              }
-            }
-
-            .goodsList {
-              & > li {
-                margin: 5px 0 15px;
-                border-bottom: 1px solid #ededed;
-                padding-bottom: 5px;
-
-                .list-wrap {
-                  .p-img {
-                    text-align: center;
-
-                    img {
-                      width: 152px;
-                    }
-                  }
-
-                  .price {
-                    font-size: 16px;
-                    color: #c81623;
-                  }
-
-                  .operate {
-                    text-align: center;
-                    margin: 5px 0;
-
-                    a {
-                      background-color: transparent;
-                      border: 1px solid #8c8c8c;
-                      color: #8c8c8c;
-                      display: inline-block;
-                      padding: 2px 14px;
-                      line-height: 18px;
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    .detail {
-      width: 980px;
-      float: right;
-
-      .fitting {
-        border: 1px solid #ddd;
-        margin-bottom: 15px;
-
-        .kt {
-          border-bottom: 1px solid #ddd;
-          background: #f1f1f1;
-          color: #333;
-          padding: 5px 0 5px 15px;
-        }
-
-        .good-suits {
-          height: 170px;
-          padding-top: 10px;
-
-          .master {
-            width: 127px;
-            height: 165px;
-            text-align: center;
-            position: relative;
-            float: left;
-
-            img {
-              width: 87px;
-            }
-
-            p {
-              color: #c81623;
-              font-size: 16px;
-              font-weight: 700;
-            }
-
-            i {
-              position: absolute;
-              top: 48px;
-              right: -25px;
-              font-size: 16px;
-            }
-          }
-
-          .suits {
-            width: 668px;
-            height: 165px;
-            float: left;
-
-            .suitsItem {
-              float: left;
-              width: 127px;
-              padding: 0 20px;
-              text-align: center;
-
-              img {
-                width: 120px;
-                height: 130px;
-              }
-
-              p {
-                font-size: 12px;
-              }
-
-              label {
-                display: block;
-                position: relative;
-
-                input {
-                  vertical-align: middle;
-                }
-
-                span {
-                  vertical-align: middle;
-                }
-              }
-            }
-          }
-
-          .result {
-            border-left: 1px solid #ddd;
-            width: 153px;
-            height: 165px;
-            padding-left: 20px;
-            float: left;
-
-            .num {
-              font-size: 14px;
-              margin-bottom: 10px;
-              margin-top: 10px;
-            }
-
-            .price-tit {
-              font-weight: bold;
-              margin-bottom: 10px;
-            }
-
-            .price {
-              color: #b1191a;
-              font-size: 16px;
-              margin-bottom: 10px;
-            }
-
-            .addshopcar {
-              background-color: #e1251b;
-              border: 1px solid #e1251b;
-              padding: 10px 25px;
-              font-size: 16px;
-              color: #fff;
-              display: inline-block;
-              box-sizing: border-box;
-            }
-          }
-        }
-      }
-
-      .intro {
-        .tab-wraped {
-          background: #ededed;
-          // border: 1px solid #ddd;
-          overflow: hidden;
-
-          li {
-            float: left;
-
-            & + li > a {
-              border-left: 1px solid #ddd;
-            }
-
-            &.active {
-              a {
-                // border: 0;
-                background: #e1251b;
-                color: #fff;
-              }
-            }
-
-            a {
-              display: block;
-              height: 40px;
-              line-height: 40px;
-              padding: 0 11px;
-              text-align: center;
-              color: #666;
-              background: #fcfcfc;
-              border-top: 1px solid #ddd;
-              border-bottom: 1px solid #ddd;
-            }
-          }
-        }
-
-        .tab-content {
-          .tab-pane {
-            display: none;
-
-            &.active {
-              display: block;
-            }
-
-            &:nth-child(1) {
-              .goods-intro {
-                padding-left: 10px;
-
-                li {
-                  margin: 10px 0;
-                }
-              }
-
-              .intro-detail {
-                img {
-                  width: 100%;
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
+@import "./index.less";
 </style>

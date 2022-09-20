@@ -52,11 +52,11 @@
           <!-- 销售产品列表 -->
           <div class="goods-list">
             <ul class="yui3-g">
-              <li class="yui3-u-1-5" v-for="(good, index) in goodsList" :key="good.skuId">
+              <li class="yui3-u-1-5" v-for="(good, index) in goodsList" :key="good.skuId" @click="toDetail(good.skuId)">
                 <div class="list-wrap">
                   <div class="p-img">
                     <!-- 在路由跳转的时候切记别忘记带id（params）参数 -->
-                    <router-link :to="`/detail/${good.skuId}`">
+                    <router-link :to="{path:'/detail',query:{skuId:good.skuId}}">
                       <img v-lazy="good.skuImg" />
                     </router-link>
                   </div>
@@ -224,6 +224,9 @@ export default {
       this.searchParams.pageNo = pageNo;
       //再次发请求
       this.getData();
+    },
+    toDetail(skuId) {
+      this.$router.push({ name: "detail", query: { skuId } });
     },
   },
   computed: {

@@ -4,12 +4,11 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.util.Query;
 import com.mail.product.dao.AttrGroupRelationDao;
+import com.mail.product.vo.request.AttrGroupRelationReqVO;
+import com.mail.common.util.Query;
 import com.mail.product.entity.AttrGroupRelationEntity;
 import com.mail.product.service.AttrGroupRelationService;
-import com.mail.product.vo.request.AttrGroupRelationReqVO;
-import com.mail.product.vo.response.AttrGroupRespVO;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;

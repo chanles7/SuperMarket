@@ -2,7 +2,6 @@ package com.mail.product.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mail.product.entity.AttrGroupRelationEntity;
-import com.mail.product.vo.response.AttrGroupRespVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 

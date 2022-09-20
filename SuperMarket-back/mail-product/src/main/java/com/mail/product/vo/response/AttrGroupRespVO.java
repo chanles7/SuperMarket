@@ -1,7 +1,6 @@
 package com.mail.product.vo.response;
 
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.mail.product.entity.AttrEntity;
 import lombok.Data;
 

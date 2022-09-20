@@ -1,18 +1,14 @@
 package com.mail.product.controller;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
-import com.mail.product.entity.AttrEntity;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
+import com.mail.product.service.AttrService;
 import com.mail.product.vo.request.AttrReqVO;
 import org.springframework.web.bind.annotation.*;
 
-import com.mail.product.service.AttrService;
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.R;
-
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Map;
 
 
 /**

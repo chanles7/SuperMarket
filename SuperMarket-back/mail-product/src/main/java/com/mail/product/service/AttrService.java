@@ -1,9 +1,9 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mail.product.entity.AttrEntity;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
-import com.mail.product.entity.AttrEntity;
 import com.mail.product.vo.request.AttrReqVO;
 
 import java.util.List;

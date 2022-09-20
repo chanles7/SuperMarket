@@ -1,5 +1,6 @@
 package com.mail.product.service.impl;
 
+import com.mail.product.service.SpuInfoDescService;
 import org.springframework.stereotype.Service;
 import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -10,7 +11,6 @@ import com.mail.common.util.Query;
 
 import com.mail.product.dao.SpuInfoDescDao;
 import com.mail.product.entity.SpuInfoDescEntity;
-import com.mail.product.service.SpuInfoDescService;
 
 
 @Service("spuInfoDescService")

@@ -1,8 +1,8 @@
 package com.mail.product.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mail.common.util.PageUtils;
 import com.mail.product.entity.ProductAttrValueEntity;
+import com.mail.common.util.PageUtils;
 
 import java.util.List;
 import java.util.Map;

@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mail.product.dao.SkuSaleAttrValueDao">
-
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.mail.product.entity.SkuSaleAttrValueEntity" id="skuSaleAttrValueMap">
         <result property="id" column="id"/>
         <result property="skuId" column="sku_id"/>
@@ -14,4 +13,12 @@
     </resultMap>
 
 
+    <select id="getSkuSaleAttrValueBySpuId" resultType="com.mail.product.vo.response.AttrRespVO">
+        select sv.attr_id, sv.attr_name, sv.attr_value as value_select, group_concat(k.sku_id) sku_ids
+        from `pms_sku_info` k
+                 left join `pms_sku_sale_attr_value` sv on k.sku_id = sv.sku_id
+        where k.spu_id = #{spuId,jdbcType=BIGINT}
+        group by sv.attr_id, sv.attr_name, sv.attr_value
+        order by sv.attr_id
+    </select>
 </mapper>

@@ -1,17 +1,15 @@
 package com.mail.product.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.mail.product.entity.SkuInfoEntity;
-import com.mail.product.service.SkuInfoService;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
+import com.mail.product.entity.SkuInfoEntity;
+import com.mail.product.service.SkuInfoService;
+import com.mail.product.vo.response.SkuDetailInfoRespVO;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.Map;
 
 
 /**
@@ -49,6 +47,18 @@ public class SkuInfoController {
 
         return R.ok().put("skuInfo", skuInfo);
     }
+
+
+    /**
+     * 通过skuId获取商品详情信息
+     */
+    @GetMapping("detail/info/{skuId}")
+    //@RequiresPermissions("product:skuinfo:info")
+    public R detailInfo(@PathVariable("skuId") Long skuId) {
+        SkuDetailInfoRespVO skuDetailInfoRespVO = skuInfoService.getDetailInfoBySkuId(skuId);
+        return R.ok(skuDetailInfoRespVO);
+    }
+
 
     /**
      * 保存

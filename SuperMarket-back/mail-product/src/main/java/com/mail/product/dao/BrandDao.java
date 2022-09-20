@@ -2,10 +2,7 @@ package com.mail.product.dao;
 
 import com.mail.product.entity.BrandEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.mail.product.vo.response.BrandRespVO;
 import org.apache.ibatis.annotations.Mapper;
-
-import java.util.List;
 
 /**
  * 品牌

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("oss")
+@RequestMapping("third/oss")
 public class OssController {
 
 

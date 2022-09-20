@@ -82,7 +82,8 @@ public class CategoryController {
     @GetMapping("list")
     //@RequiresPermissions("product:category:delete")
     public R list() {
-        return R.ok(categoryService.getAllCategoryList());
+        List<CategoryEntity> categoryList = categoryService.getAllCategoryList();
+        return R.ok(categoryList);
     }
 
 }
