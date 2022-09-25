@@ -7,8 +7,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mail.common.to.OrderSpuInfoTO;
 import com.mail.common.to.SkuReductionTO;
 import com.mail.common.to.SpuBoundTO;
+import com.mail.common.to.SpuInfoTO;
 import com.mail.common.to.es.SkuInfoEsTO;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.Query;
@@ -26,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -70,7 +73,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void saveProduct(SpuInfoReqVO spuInfoReqVO) {
         log.info("spuInfoReqVO:{}", spuInfoReqVO);
@@ -133,16 +136,18 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
 
         //6、保存当前spu对应的sku消息
         List<SkuInfoReqVO> skus = spuInfoReqVO.getSkus();
-        if (CollectionUtil.isEmpty(skus)) return;
-
+        if (CollectionUtil.isEmpty(skus)) {
+            return;
+        }
 
         skus.forEach(sku -> {
             //6.1、保存sku基本信息
             String skuDefaultImg = "";
             List<ImageReqVO> skuImages = sku.getImages();
             for (ImageReqVO skuImage : skuImages) {
-                if (skuImage.getDefaultImg() == 1)
+                if (skuImage.getDefaultImg() == 1) {
                     skuDefaultImg = skuImage.getImgUrl();
+                }
             }
 
             SkuInfoEntity skuInfo = BeanUtil.copyProperties(sku, SkuInfoEntity.class);
@@ -213,7 +218,7 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
     }
 
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void upShelf(Long spuId) {
         //1、组装es数据发送
@@ -300,5 +305,34 @@ public class SpuInfoServiceImpl extends ServiceImpl<SpuInfoDao, SpuInfoEntity> i
                 .set("update_time", new Date())
                 .update();
 
+    }
+
+
+    @Override
+    public OrderSpuInfoTO getSpuInfoBySkuId(Long skuId) {
+        OrderSpuInfoTO orderSpuInfo = new OrderSpuInfoTO();
+
+        SkuInfoEntity skuInfo = skuInfoService.getById(skuId);
+        SpuInfoEntity spuInfo = this.getById(skuInfo.getSpuId());
+        SpuInfoTO spuInfoTO = BeanUtil.copyProperties(spuInfo, SpuInfoTO.class);
+
+        BrandEntity brand = brandService.getById(spuInfo.getBrandId());
+        spuInfoTO.setBrandName(brand.getName());
+
+        Long[] path = categoryService.getCurrentCategoryPath(spuInfo.getCatalogId());
+        List<String> categoryNameList = Arrays.stream(path)
+                .map(item -> categoryService.getById(item))
+                .map(CategoryEntity::getName)
+                .collect(Collectors.toList());
+
+        spuInfoTO.setCatelogName(org.apache.commons.lang.StringUtils.join(categoryNameList, "/"));
+        orderSpuInfo.setSpuInfoTO(spuInfoTO);
+
+        List<SkuSaleAttrValueEntity> saleAttrValueList = skuSaleAttrValueService.getSkuSaleAttrValueBySkuId(skuId);
+        List<String> attrs = saleAttrValueList.stream()
+                .map(item -> item.getAttrName() + ":" + item.getAttrValue())
+                .collect(Collectors.toList());
+        orderSpuInfo.setAttrs(attrs);
+        return orderSpuInfo;
     }
 }

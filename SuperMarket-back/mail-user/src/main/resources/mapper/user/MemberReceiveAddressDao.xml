@@ -2,8 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.mail.user.dao.MemberReceiveAddressDao">
-
-	<!-- 可根据自己的需求，是否要使用 -->
+    <!-- 可根据自己的需求，是否要使用 -->
     <resultMap type="com.mail.user.entity.MemberReceiveAddressEntity" id="memberReceiveAddressMap">
         <result property="id" column="id"/>
         <result property="memberId" column="member_id"/>
@@ -19,4 +18,16 @@
     </resultMap>
 
 
+    <update id="updateState">
+        update `ums_member_receive_address` c
+        set c.default_status = case when c.id = #{addressId,jdbcType=VARCHAR} then 1 else 0 end
+        where c.id in
+              (select tmp.id
+               from (SELECT b.id
+                     FROM `ums_member_receive_address` a
+                    inner join `ums_member_receive_address` b
+                    on a.member_id = b.member_id
+                    where a.id = #{addressId,jdbcType=VARCHAR}) tmp
+              )
+    </update>
 </mapper>

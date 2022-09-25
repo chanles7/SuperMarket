@@ -13,5 +13,11 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface MemberReceiveAddressDao extends BaseMapper<MemberReceiveAddressEntity> {
+
+    /**
+     * 更新收货地址状态
+     * @param addressId 地址id
+     */
+    void updateState(String addressId);
 	
 }

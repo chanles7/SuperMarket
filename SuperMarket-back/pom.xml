@@ -11,14 +11,15 @@
     <packaging>pom</packaging>
 
 
-
     <modules>
+        <module>mail-cart</module>
+        <module>mail-admin</module>
+        <module>mail-third</module>
         <module>mail-coupon</module>
         <module>mail-depository</module>
         <module>mail-order</module>
         <module>mail-product</module>
         <module>mail-user</module>
-        <module>renren-fast</module>
         <module>mail-common</module>
         <module>mail-gateway</module>
         <module>mail-search</module>

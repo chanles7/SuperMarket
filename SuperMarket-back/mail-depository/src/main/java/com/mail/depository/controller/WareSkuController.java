@@ -1,19 +1,16 @@
 package com.mail.depository.controller;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.mail.depository.entity.WareSkuEntity;
-import com.mail.depository.service.WareSkuService;
+import com.mail.common.to.OrderLockTO;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
+import com.mail.depository.entity.WareSkuEntity;
+import com.mail.depository.service.WareSkuService;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -94,5 +91,25 @@ public class WareSkuController {
     public R getHasStock(@RequestParam List<Long> ids) {
         Map<Long, Boolean> hasStock = wareSkuService.getHasStock(ids);
         return R.ok(hasStock);
+    }
+
+
+    @GetMapping("stock/num/{skuId}")
+    public R getStockNum(@PathVariable Long skuId) {
+        Integer number = wareSkuService.getStockNum(skuId);
+        return R.ok(number);
+    }
+
+
+    @GetMapping("enough/stock/{skuId}/{needNum}")
+    public R getStockEnough(@PathVariable("skuId") Long skuId, @PathVariable("needNum") Integer needNum) {
+        Boolean enough = wareSkuService.getStockEnough(skuId, needNum);
+        return R.ok(enough);
+    }
+
+
+    @PostMapping("lock/stock")
+    public R lockStock(@RequestBody OrderLockTO orderLockTO) {
+        return wareSkuService.lockStock(orderLockTO);
     }
 }

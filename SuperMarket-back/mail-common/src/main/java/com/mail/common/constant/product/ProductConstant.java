@@ -6,7 +6,9 @@ public interface ProductConstant {
     Integer CAN_BE_RETRIEVED = 1;
 
 
-    //商品状态
+    /**
+     * 商品状态
+     */
     Integer SPU_PUBLISH_STATUS_UP = 1;
 
 }

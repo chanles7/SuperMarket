@@ -8,11 +8,9 @@
 
 package com.mail.common.util;
 
-import cn.hutool.json.JSONObject;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.mail.common.exception.ExceptionEnum;
-import lombok.Data;
 import org.apache.http.HttpStatus;
 
 import java.util.HashMap;
@@ -25,7 +23,7 @@ public class R extends HashMap<String, Object> {
 
     public R() {
         put("code", 200);
-        put("msg", "success");
+        put("msg", "操作成功");
     }
 
 

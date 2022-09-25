@@ -4,12 +4,10 @@ package com.mail.user.controller;
 import com.mail.common.util.R;
 import com.mail.user.service.UserService;
 import com.mail.user.vo.req.UserReqVO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
 
 @RestController
 @RequestMapping("user")
@@ -27,14 +25,26 @@ public class UserController {
 
 
     @PostMapping("register")
-    public R register(UserReqVO userReqVO) {
+    public R register(@RequestBody UserReqVO userReqVO) {
         return userService.register(userReqVO);
     }
 
 
-    @GetMapping("login")
-    public R login(UserReqVO userReqVO){
+    @PostMapping("login")
+    public R login(@RequestBody UserReqVO userReqVO){
         return userService.login(userReqVO);
+    }
+
+
+    @GetMapping("getUserInfo")
+    public R getUserIndo(ServletRequest req) {
+        return userService.getUserIndo(req);
+    }
+
+
+    @RequestMapping("logout")
+    public R logout(ServletRequest req) {
+        return userService.logout(req);
     }
 
 }

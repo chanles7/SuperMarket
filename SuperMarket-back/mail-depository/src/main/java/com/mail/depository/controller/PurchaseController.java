@@ -1,21 +1,17 @@
 package com.mail.depository.controller;
 
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
+import com.mail.common.vo.request.MergeReqVO;
+import com.mail.common.vo.request.PurchaseDoneReqVO;
+import com.mail.depository.entity.PurchaseEntity;
+import com.mail.depository.service.PurchaseService;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-
-import com.mail.depository.vo.request.MergeReqVO;
-import com.mail.depository.vo.request.PurchaseDoneReqVO;
-import net.sf.jsqlparser.statement.merge.Merge;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import com.mail.depository.entity.PurchaseEntity;
-import com.mail.depository.service.PurchaseService;
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.R;
-
-import javax.annotation.Resource;
 
 
 /**

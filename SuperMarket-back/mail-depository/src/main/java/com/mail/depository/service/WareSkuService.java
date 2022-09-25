@@ -1,9 +1,11 @@
 package com.mail.depository.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.mail.common.to.OrderLockTO;
 import com.mail.common.util.PageUtils;
+import com.mail.common.util.R;
 import com.mail.depository.entity.WareSkuEntity;
-import com.mail.depository.vo.request.DepositorySkuReqVO;
+import com.mail.common.vo.request.DepositorySkuReqVO;
 
 import java.util.List;
 import java.util.Map;
@@ -22,5 +24,32 @@ public interface WareSkuService extends IService<WareSkuEntity> {
     void addStock(DepositorySkuReqVO depositorySkuReqVO);
 
     Map<Long, Boolean> getHasStock(List<Long> ids);
+
+
+    /**
+     * 获取库存数量
+     *
+     * @param skuId sku
+     * @return
+     */
+    Integer getStockNum(Long skuId);
+
+
+    /**
+     * 查看某个商品有无库存
+     *
+     * @param skuId  商品id
+     * @param needNum 购买数量
+     * @return
+     */
+    Boolean getStockEnough(Long skuId, Integer needNum);
+
+
+    /**
+     * 锁库存
+     * @param orderLockTO 订单信息
+     * @return
+     */
+    R lockStock(OrderLockTO orderLockTO);
 }
 

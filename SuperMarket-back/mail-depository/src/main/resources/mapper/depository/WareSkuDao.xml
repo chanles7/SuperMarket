@@ -30,4 +30,22 @@
         </where>
         group by sku_id
     </select>
+
+
+    <select id="hasStockWareList" resultType="java.lang.Long">
+        select ware_id
+        from dms_ware_sku
+        where sku_id = #{skuId,jdbcType=BIGINT}
+          and (stock - stock_locked) > 0
+    </select>
+
+
+    <update id="lockSkuStock">
+        update dms_ware_sku
+        set stock_locked = stock_locked + #{num,jdbcType=INTEGER}
+        where sku_id = #{skuId,jdbcType=BIGINT}
+          and ware_id = #{wareId,jdbcType=BIGINT}
+          and stock - stock_locked > 0
+    </update>
+
 </mapper>

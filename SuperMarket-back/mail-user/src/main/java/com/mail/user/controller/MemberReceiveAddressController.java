@@ -1,20 +1,16 @@
 package com.mail.user.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.mail.user.entity.MemberReceiveAddressEntity;
-import com.mail.user.service.MemberReceiveAddressService;
+import com.mail.common.to.TransportFeeTO;
 import com.mail.common.util.PageUtils;
 import com.mail.common.util.R;
+import com.mail.user.entity.MemberReceiveAddressEntity;
+import com.mail.user.service.MemberReceiveAddressService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -35,7 +31,7 @@ public class MemberReceiveAddressController {
      */
     @RequestMapping("/list")
     //@RequiresPermissions("user:memberreceiveaddress:list")
-    public R list(@RequestParam Map<String, Object> params){
+    public R list(@RequestParam Map<String, Object> params) {
         PageUtils page = memberReceiveAddressService.queryPage(params);
 
         return R.ok().put("page", page);
@@ -47,8 +43,8 @@ public class MemberReceiveAddressController {
      */
     @RequestMapping("/info/{id}")
     //@RequiresPermissions("user:memberreceiveaddress:info")
-    public R info(@PathVariable("id") Long id){
-		MemberReceiveAddressEntity memberReceiveAddress = memberReceiveAddressService.getById(id);
+    public R info(@PathVariable("id") Long id) {
+        MemberReceiveAddressEntity memberReceiveAddress = memberReceiveAddressService.getById(id);
 
         return R.ok().put("memberReceiveAddress", memberReceiveAddress);
     }
@@ -58,8 +54,8 @@ public class MemberReceiveAddressController {
      */
     @RequestMapping("/save")
     //@RequiresPermissions("user:memberreceiveaddress:save")
-    public R save(@RequestBody MemberReceiveAddressEntity memberReceiveAddress){
-		memberReceiveAddressService.save(memberReceiveAddress);
+    public R save(@RequestBody MemberReceiveAddressEntity memberReceiveAddress) {
+        memberReceiveAddressService.save(memberReceiveAddress);
 
         return R.ok();
     }
@@ -69,8 +65,8 @@ public class MemberReceiveAddressController {
      */
     @RequestMapping("/update")
     //@RequiresPermissions("user:memberreceiveaddress:update")
-    public R update(@RequestBody MemberReceiveAddressEntity memberReceiveAddress){
-		memberReceiveAddressService.updateById(memberReceiveAddress);
+    public R update(@RequestBody MemberReceiveAddressEntity memberReceiveAddress) {
+        memberReceiveAddressService.updateById(memberReceiveAddress);
 
         return R.ok();
     }
@@ -80,10 +76,31 @@ public class MemberReceiveAddressController {
      */
     @RequestMapping("/delete")
     //@RequiresPermissions("user:memberreceiveaddress:delete")
-    public R delete(@RequestBody Long[] ids){
-		memberReceiveAddressService.removeByIds(Arrays.asList(ids));
+    public R delete(@RequestBody Long[] ids) {
+        memberReceiveAddressService.removeByIds(Arrays.asList(ids));
 
         return R.ok();
+    }
+
+
+    @GetMapping("list/user")
+    public R getAddressListByUserId(@RequestParam String userId) {
+        List<MemberReceiveAddressEntity> memberReceiveAddressList = memberReceiveAddressService.getAddressListByUserId(userId);
+        return R.ok(memberReceiveAddressList);
+    }
+
+
+    @PostMapping("update/state/{id}")
+    public R updateState(@PathVariable("id") String addressId) {
+        memberReceiveAddressService.updateState(addressId);
+        return R.ok();
+    }
+
+
+    @GetMapping("transport/fee/{id}")
+    public R getTransportFeeByAddressId(@PathVariable("id") String addressId) {
+        TransportFeeTO transportFeeTo = memberReceiveAddressService.getTransportFeeByAddressId(addressId);
+        return R.ok(transportFeeTo);
     }
 
 }

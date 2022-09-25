@@ -1,31 +1,33 @@
 package com.mail.depository.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import com.baomidou.mybatisplus.core.toolkit.BeanUtils;
+import cn.hutool.core.collection.CollectionUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mail.common.to.OrderLockTO;
+import com.mail.common.util.PageUtils;
+import com.mail.common.util.Query;
 import com.mail.common.util.R;
+import com.mail.common.vo.CartItemVO;
+import com.mail.common.vo.request.DepositorySkuReqVO;
+import com.mail.depository.dao.WareSkuDao;
+import com.mail.depository.entity.WareSkuEntity;
 import com.mail.depository.feign.ProductFeignService;
-import com.mail.depository.vo.request.DepositorySkuReqVO;
+import com.mail.depository.service.WareSkuService;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mail.common.util.PageUtils;
-import com.mail.common.util.Query;
-
-import com.mail.depository.dao.WareSkuDao;
-import com.mail.depository.entity.WareSkuEntity;
-import com.mail.depository.service.WareSkuService;
-
-import javax.annotation.Resource;
 
 
 @Slf4j
@@ -83,5 +85,73 @@ public class WareSkuServiceImpl extends ServiceImpl<WareSkuDao, WareSkuEntity> i
         List<Map<String, Object>> mapList = wareSkuDao.getStockBySkuId(ids);
         mapList.forEach(item -> map.put((Long) item.get("key"), (Boolean) item.get("value")));
         return map;
+    }
+
+
+    @Override
+    public Integer getStockNum(Long skuId) {
+        List<WareSkuEntity> skuStockList = this.query().eq("sku_id", skuId).list();
+        AtomicInteger number = new AtomicInteger();
+        skuStockList.forEach(item -> number.addAndGet((item.getStock() - item.getStockLocked())));
+        return number.get();
+    }
+
+
+    @Override
+    public Boolean getStockEnough(Long skuId, Integer needNum) {
+        List<WareSkuEntity> skuStockList = this.query().eq("sku_id", skuId).list();
+        AtomicReference<Integer> haveNum = new AtomicReference<>(0);
+        skuStockList.forEach(item -> {
+            haveNum.updateAndGet(v -> v + (item.getStock() - item.getStockLocked()));
+        });
+        return haveNum.get() >= needNum;
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public R lockStock(OrderLockTO orderLockTO) {
+        List<CartItemVO> locks = orderLockTO.getItems();
+
+        //查询有货的仓库
+        List<SkuHasStock> skuHasStockList = locks.stream()
+                .map(cartItemVO -> {
+                    SkuHasStock skuHasStock = new SkuHasStock();
+                    skuHasStock.setSkuId(cartItemVO.getSkuId());
+                    List<Long> wareIds = wareSkuDao.hasStockWareList(cartItemVO.getSkuId());
+                    skuHasStock.setWareIds(wareIds);
+                    skuHasStock.setCount(cartItemVO.getCount());
+                    return skuHasStock;
+                })
+                .collect(Collectors.toList());
+
+
+        //锁定库存
+        for (SkuHasStock skuHasStock : skuHasStockList) {
+            Boolean stockLock = false;
+            List<Long> wareIds = skuHasStock.getWareIds();
+            if (CollectionUtil.isEmpty(wareIds)) {
+                throw new RuntimeException("库存不足");
+            }
+            for (Long wareId : wareIds) {
+                Long count = wareSkuDao.lockSkuStock(skuHasStock.getSkuId(), skuHasStock.getCount(), wareId);
+                if (count == 1) {
+                    stockLock = true;
+                    break;
+                }
+            }
+            if (!stockLock) {
+                throw new RuntimeException("库存不足");
+            }
+        }
+        return R.ok();
+    }
+
+
+    @Data
+    class SkuHasStock {
+        private Long skuId;
+        private Integer count;
+        private List<Long> wareIds;
     }
 }

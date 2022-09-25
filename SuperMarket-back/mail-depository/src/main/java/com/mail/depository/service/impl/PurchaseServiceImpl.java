@@ -6,10 +6,10 @@ import com.mail.common.constant.depository.PurchaseStatusEnum;
 import com.mail.depository.entity.PurchaseDetailEntity;
 import com.mail.depository.service.PurchaseDetailService;
 import com.mail.depository.service.WareSkuService;
-import com.mail.depository.vo.request.DepositorySkuReqVO;
-import com.mail.depository.vo.request.MergeReqVO;
-import com.mail.depository.vo.request.PurchaseDoneReqVO;
-import com.mail.depository.vo.request.PurchaseItemDoneReqVO;
+import com.mail.common.vo.request.DepositorySkuReqVO;
+import com.mail.common.vo.request.MergeReqVO;
+import com.mail.common.vo.request.PurchaseDoneReqVO;
+import com.mail.common.vo.request.PurchaseItemDoneReqVO;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;

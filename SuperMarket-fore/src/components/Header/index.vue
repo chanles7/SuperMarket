@@ -14,8 +14,8 @@
           </p>
           <!-- 登录了 -->
           <p v-else>
-                <a>{{userName}}</a>
-                <a class="register" @click="logout">退出登录</a>
+            <a>{{userName}}</a>
+            <a class="register" @click="logout">退出登录</a>
           </p>
         </div>
         <div class="typeList">
@@ -40,17 +40,8 @@
       </h1>
       <div class="searchArea">
         <form action="###" class="searchForm">
-          <input
-            type="text"
-            id="autocomplete"
-            class="input-error input-xxlarge"
-            v-model="keyword"
-          />
-          <button
-            class="sui-btn btn-xlarge btn-danger"
-            type="button"
-            @click="goSearch"
-          >
+          <input type="text" id="autocomplete" class="input-error input-xxlarge" v-model="keyword" />
+          <button class="sui-btn btn-xlarge btn-danger" type="button" @click="goSearch">
             搜索
           </button>
         </form>
@@ -82,19 +73,17 @@ export default {
       }
     },
     //退出登录
-    async logout(){
+    async logout() {
       //退出登录需要做的事情
       //1:需要发请求，通知服务器退出登录【清除一些数据：token】
       //2:清除项目当中的数据【userInfo、token】
-        try {
-          //如果退出成功
-          await this.$store.dispatch('userLogout');
-          //回到首页
-          this.$router.push('/home');
-        } catch (error) {
-          
-        }
-    }
+      try {
+        //如果退出成功
+        await this.$store.dispatch("userLogout");
+        //回到首页
+        this.$router.push("/home");
+      } catch (error) {}
+    },
   },
   mounted() {
     //通过全局事件总线清除关键字
@@ -102,12 +91,12 @@ export default {
       this.keyword = "";
     });
   },
-  computed:{
+  computed: {
     //用户名信息
-    userName(){
-      return this.$store.state.user.userInfo.name;
-    }
-  }
+    userName() {
+      return this.$store.state.user.userInfo.nickname;
+    },
+  },
 };
 </script>
 

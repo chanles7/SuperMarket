@@ -5,12 +5,21 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: cart_route
+          uri: lb://mail-cart
+          predicates:
+            - Path=/api/cart/**
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+
+
         - id: search_route
           uri: lb://mail-search
           predicates:
             - Path=/api/search/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+
 
         - id: third_route
           uri: lb://mail-third
@@ -19,11 +28,13 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+
         - id: coupon_route
           uri: lb://mail-coupon
           predicates:
               - Path=/api/coupon/**
           filters:
+
               - RewritePath=/api/(?<segment>.*),/$\{segment}
 
         - id: depository_route
@@ -33,12 +44,14 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+
         - id: order_route
           uri: lb://mail-order
           predicates:
              - Path=/api/order/**
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+
 
         - id: product_route
           uri: lb://mail-product
@@ -47,6 +60,7 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+
         - id: user_route
           uri: lb://mail-user
           predicates:
@@ -54,8 +68,9 @@ spring:
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
 
+
         - id: admin_route
-          uri: lb://renren-fast
+          uri: lb://mail-admin
           predicates:
             - Path=/api/**
           filters:

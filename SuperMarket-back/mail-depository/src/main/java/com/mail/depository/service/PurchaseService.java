@@ -3,8 +3,8 @@ package com.mail.depository.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mail.common.util.PageUtils;
 import com.mail.depository.entity.PurchaseEntity;
-import com.mail.depository.vo.request.MergeReqVO;
-import com.mail.depository.vo.request.PurchaseDoneReqVO;
+import com.mail.common.vo.request.MergeReqVO;
+import com.mail.common.vo.request.PurchaseDoneReqVO;
 
 import java.util.List;
 import java.util.Map;

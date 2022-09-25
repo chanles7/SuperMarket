@@ -10,12 +10,14 @@ import com.mail.user.service.MemberService;
 import com.mail.user.service.UserService;
 import com.mail.user.util.RedisUtils;
 import com.mail.user.vo.req.UserReqVO;
+import com.mail.user.vo.resp.UserRespVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletRequest;
 import java.util.concurrent.TimeUnit;
 
 import static com.mail.user.constant.UserConstant.SMS_CODE_CACHE_PREFIX;
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
             }
         }
         String code = CommonUtils.generateRandomNumber(6);
-        log.info("验证码为:{},1分钟内有效", code);
+        log.info("验证码为:{},10分钟内有效", code);
         String param = code + "_" + System.currentTimeMillis();
         redisUtils.set(SMS_CODE_CACHE_PREFIX + phone, param, 10L, TimeUnit.MINUTES);
 //        String code = "";
@@ -58,6 +60,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public R register(UserReqVO userVO) {
+        log.info("注册用户信息为:{}", userVO);
         String s = stringRedisTemplate.opsForValue().get(SMS_CODE_CACHE_PREFIX + userVO.getPhone());
         if (StringUtils.isBlank(s)) {
             return R.error("验证码已失效");
@@ -86,13 +89,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public R login(UserReqVO userVO) {
+        log.info("登录用户信息为:{}", userVO);
         MemberEntity member = memberService.getMemberByPhone(userVO.getPhone());
+        if (member == null) {
+            return R.error("请先注册");
+        }
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         if (!bCryptPasswordEncoder.matches(userVO.getPassword(), member.getPassword())) {
             return R.error("密码错误");
         }
         String uuid = UUID.randomUUID().toString();
-        redisUtils.set(USER_LOGIN_CACHE_PREFIX + member.getId(), uuid, 30L, TimeUnit.DAYS);
-        return R.ok(uuid);
+        redisUtils.set(USER_LOGIN_CACHE_PREFIX + uuid, member.getId().toString(), 30L, TimeUnit.DAYS);
+        return R.ok().put("data", uuid);
+    }
+
+
+    @Override
+    public R getUserIndo(ServletRequest req) {
+        String token = (String) req.getAttribute("token");
+        if (token == null) {
+            R.error();
+        }
+        UserRespVO userRespVO = new UserRespVO();
+        userRespVO.setNickname("游客1997");
+        userRespVO.setActor("");
+        return R.ok(userRespVO);
+    }
+
+
+    @Override
+    public R logout(ServletRequest req) {
+        String token = (String) req.getAttribute("token");
+        if ("*".equals(token)) {
+            return R.error();
+        }
+        redisUtils.delete(USER_LOGIN_CACHE_PREFIX + token);
+        return R.ok();
     }
 }

@@ -5,11 +5,6 @@
 // import Search from '@/view/Search'
 const Search = () => import('@/view/Search');
 
-import Detail from '@/view/Detail';
-import AddCartSuccess from '@/view/AddCartSuccess';
-import ShopCart from '@/view/ShopCart';
-
-import Trade from '@/view/Trade';
 import Pay from '@/view/Pay';
 import PaySuccess from '@/view/PaySuccess';
 import Center from '@/view/Center';
@@ -56,16 +51,12 @@ export default [
   },
   {
     path: '/addcartsuccess',
-    component: AddCartSuccess,
+    component: () => import('@/view/AddCartSuccess/index.vue'),
 
     beforeEnter(to, from, next) {
-      // 得到当前路由信息对象
-      // const route = router.currentRoute  // route就是from
-
-      // 得到要跳转到目路由的query参数
       const skuNum = to.query.skuNum;
       // 读取保存的数据
-      const skuInfo = JSON.parse(window.sessionStorage.getItem('SKU_INFO_KEY'));
+      const skuInfo = JSON.parse(window.sessionStorage.getItem('SKUINFO'));
       console.log('---', skuNum, skuInfo);
       // 只有都存在, 才放行
       if (skuNum && skuInfo) {
@@ -78,19 +69,17 @@ export default [
   },
   {
     path: '/shopcart',
-    component: ShopCart,
+    component: () => import('@/view/ShopCart/index.vue'),
   },
 
   {
     path: '/trade',
-    component: Trade,
+    component: () => import('@/view/Trade/index.vue'),
     /* 只能从购物车界面, 才能跳转到交易界面 */
     beforeEnter(to, from, next) {
-      if (from.path === '/shopcart') {
-        next();
-      } else {
-        next('/shopcart');
-      }
+      // if (from.path === '/shopcart') {
+      next();
+      // }
     },
   },
   {
@@ -102,11 +91,11 @@ export default [
 
     /* 只能从交易界面, 才能跳转到支付界面 */
     beforeEnter(to, from, next) {
-      if (from.path === '/trade') {
-        next();
-      } else {
-        next('/trade');
-      }
+      // if (from.path === '/trade') {
+      next();
+      // } else {
+      // next('/trade');
+      // }
     },
   },
 
@@ -218,5 +207,14 @@ export default [
         },
       },
     ],
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404',
+    component: () => import('@/view/404.vue'),
+    meta: {
+      isShowHeader: true,
+      isHideFooter: true,
+    },
   },
 ];

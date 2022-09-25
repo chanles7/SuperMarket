@@ -1,8 +1,7 @@
 package com.mail.depository.dao;
 
-import com.mail.depository.entity.WareSkuEntity;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.MapKey;
+import com.mail.depository.entity.WareSkuEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +20,24 @@ public interface WareSkuDao extends BaseMapper<WareSkuEntity> {
 
 
     List<Map<String, Object>> getStockBySkuId(@Param("ids") List<Long> ids);
+
+
+    /**
+     * 查询出可以出库的仓库id集合
+     *
+     * @param skuId 商品id
+     * @return
+     */
+    List<Long> hasStockWareList(Long skuId);
+
+
+    /**
+     * 锁库存
+     *
+     * @param skuId  商品id
+     * @param count  购买数量
+     * @param wareId 仓库id
+     * @return
+     */
+    Long lockSkuStock(@Param("skuId") Long skuId, @Param("num") Integer count, @Param("wareId") Long wareId);
 }

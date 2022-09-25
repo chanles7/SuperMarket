@@ -40,30 +40,22 @@ export const reqUpdateCheckedByid = (skuId, isChecked) =>
   req({ url: `/cart/checkCart/${skuId}/${isChecked}`, method: 'get' });
 
 //获取验证码
-//URL:/api/user/passport/sendCode/{phone}  method:get
-export const reqGetCode = (phone) =>
-  req({ url: `/user/passport/sendCode/${phone}`, method: 'get' });
+export const reqSmsCode = (phone) =>
+  req.get('/user/send', { params: { phone } });
 
 //注册
 //url:/api/user/passport/register  method:post    phone code password
-
-export const reqUserRegister = (data) =>
-  req({ url: '/user/passport/register', data, method: 'post' });
+export const reqUserRegister = (data) => req.post('/user/register', data);
 
 //登录
 //URL:/api/user/passport/login  method:post phone password
-export const reqUserLogin = (data) =>
-  req({ url: '/user/passport/login', data, method: 'post' });
+export const reqUserLogin = (data) => req.post('/user/login', data);
 
 //获取用户信息【需要带着用户的token向服务器要用户信息】
-//URL:/api/user/passport/auth/getUserInfo  method:get
-export const reqUserInfo = () =>
-  req({ url: '/user/passport/auth/getUserInfo', method: 'get' });
+export const reqUserInfo = () => req.get('/user/getUserInfo');
 
 //退出登录
-//URL:/api/user/passport/logout  get
-export const reqLogout = () =>
-  req({ url: '/user/passport/logout', method: 'get' });
+export const reqLogout = () => req.get('/user/logout');
 
 //获取用户地址信息
 //URL:/api/user/userAddress/auth/findUserAddressList  method:get

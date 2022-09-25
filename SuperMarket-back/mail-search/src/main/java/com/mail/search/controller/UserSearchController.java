@@ -21,6 +21,7 @@ public class UserSearchController {
 
     @GetMapping("sku/list")
     public R userSearchSkuInfoList(SearchParamReqVO searchParamReqVO){
+        //TODO 检索信息不能更新
         SearchParamRespVO searchParamRespVO = userSearchService.userSearchSkuInfoList(searchParamReqVO);
         return R.ok(searchParamRespVO);
     }

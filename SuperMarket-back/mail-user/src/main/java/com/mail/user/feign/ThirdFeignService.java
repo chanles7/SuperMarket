@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@FeignClient
+@FeignClient("mail-third")
 public interface ThirdFeignService {
 
-    @GetMapping("sendCode")
+    @GetMapping("third/sms/sendCode")
     R sendCode(@RequestParam("phone") String phone, @RequestParam("code") String code);
 
 }

@@ -25,13 +25,13 @@
       </div>
       <div class="content">
         <label>登录密码:</label>
-        <input placeholder="请输入你的密码" v-model="password" name="password" v-validate="{ required: true, regex: /^[0-9A-Za-z]{8,20}$/ }" :class="{ invalid: errors.has('password') }" />
+        <input placeholder="请输入你的密码" v-model="password" name="password" v-validate="{ required: true, regex: /^[0-9A-Za-z]{6,20}$/ }" :class="{ invalid: errors.has('password') }" />
         <span class="error-msg">{{ errors.first("password") }}</span>
       </div>
       <div class="content">
         <label>确认密码:</label>
-        <input placeholder="请输入确认密码" v-model="password1" name="password1" v-validate="{ required: true, is: password }" :class="{ invalid: errors.has('password1') }" />
-        <span class="error-msg">{{ errors.first("password1") }}</span>
+        <input placeholder="请输入确认密码" v-model="confPassword" name="confPassword" v-validate="{ required: true, is: password }" :class="{ invalid: errors.has('confPassword') }" />
+        <span class="error-msg">{{ errors.first("confPassword") }}</span>
       </div>
       <div class="controls">
         <input type="checkbox" v-model="agree" name="agree" v-validate="{ required: true, tongyi: true }" :class="{ invalid: errors.has('agree') }" />
@@ -73,7 +73,7 @@ export default {
       //密码
       password: "",
       //确认密码
-      password1: "",
+      confPassword: "",
       //是否同意
       agree: true,
 
@@ -97,11 +97,9 @@ export default {
       }, 1000); //1000毫秒后执行
 
       try {
-        //如果获取到验证码
-        // const { phone } = this;
-        // phone && (await this.$store.dispatch("getCode", phone));
-        // //将组件的code属性值变为仓库中验证码[验证码直接自己填写了]
-        // this.code = this.$store.state.user.code;
+        // 如果获取到验证码;
+        const { phone } = this;
+        phone && (await this.$store.dispatch("getCode", phone));
       } catch (error) {}
     },
     //用户注册
@@ -111,13 +109,15 @@ export default {
       //只要有一个表单没有成功，不会发请求
       if (success) {
         try {
-          const { phone, code, password, password1 } = this;
+          const { phone, code, password, confPassword } = this;
           await this.$store.dispatch("userRegister", {
             phone,
             code,
             password,
+            confPassword,
           });
           //注册成功进行路由的跳转
+          this.$message.success("注册成功");
           this.$router.push("/login");
         } catch (error) {
           alert(error.message);
